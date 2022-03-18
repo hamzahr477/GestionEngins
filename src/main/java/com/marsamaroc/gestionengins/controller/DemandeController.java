@@ -211,9 +211,9 @@ public class DemandeController {
     }
 
 
-    @RequestMapping(value="/engin",method= RequestMethod.GET)
-    DemandeCompletDTO ElisteEnginsEntree(){
-        Engin engin = enginService.getById("N102548");
+    @GetMapping(value="/engin/{idEngin}")
+    DemandeCompletDTO ElisteEnginsEntree(@PathVariable("idEngin") String idEngin){
+        Engin engin = enginService.getById(idEngin);
         return new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation())));
     }
 
