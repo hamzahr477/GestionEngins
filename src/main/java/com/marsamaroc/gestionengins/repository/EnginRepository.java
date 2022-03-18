@@ -1,6 +1,7 @@
 package com.marsamaroc.gestionengins.repository;
 
 import com.marsamaroc.gestionengins.entity.Engin;
+import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.enums.DisponibiliteEnginParck;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +17,9 @@ import java.util.List;
 public interface EnginRepository extends JpaRepository<Engin,String> {
 
 
-    @Query("select e from Engin e "+
-            "where e.etat = '"+EtatEngin.sortie_value +"'")
+    @Query("select distinct e from Engin e , EnginAffecte ea" +
+            " where e.codeEngin = ea.engin.codeEngin "+
+            "and ea.etat = '"+ EtatAffectation.reserve_value+"'")
     List<Engin> findAllEnginAffecteAndPreSortie();
 
     @Query("select e from Engin e "+

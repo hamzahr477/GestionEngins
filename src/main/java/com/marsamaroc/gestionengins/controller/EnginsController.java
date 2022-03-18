@@ -10,6 +10,8 @@ import com.marsamaroc.gestionengins.service.ControleService;
 import com.marsamaroc.gestionengins.service.EnginService;
 import com.marsamaroc.gestionengins.service.FamilleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class EnginsController {
     FamilleService familleService;
 
     @PostMapping(value = "/addEngins")
-    List<Engin> addEnginList(@RequestBody List<Engin> enginList){
+    ResponseEntity<?> addEnginList(@RequestBody List<Engin> enginList){
         Famille famille_Old;
         for(Engin engin : enginList){
             if(engin.getFamille().getNomFamille()==null) {
@@ -41,56 +43,62 @@ public class EnginsController {
             engin.getFamille().setEngin(null);
             enginService.save(engin);
         }
-        return enginList;
+        return new ResponseEntity<>(enginList, HttpStatus.CREATED);
+
     }
     
     
     @GetMapping(value="/listeEngins")
-    List<EnginDTO> listeEngins(){
+    ResponseEntity<?> listeEngins(){
         List<Engin> enginList = enginService.getAll();
         List<EnginDTO> enginDTOList =new ArrayList<>();
         for (Engin engin : enginList)
         	enginDTOList.add(new EnginDTO(engin,  engin.getDerniereAffectation()));
-        return enginDTOList;
+        return new ResponseEntity<>(enginDTOList, HttpStatus.OK);
+
     }
 
     @PostMapping(value="/add")
-    EnginDTO saveOrUpdate(@RequestBody Engin enging){
-        return enginService.saveOrUpdate(enging);
+    ResponseEntity<?> saveOrUpdate(@RequestBody Engin enging){
+        return new ResponseEntity<>(enginService.saveOrUpdate(enging), HttpStatus.CREATED);
     }
     
     @GetMapping(value="/listeEnginsSortie")
-    List<EnginSEDTO> listeEnginsSortie(){
+    ResponseEntity<?> listeEnginsSortie(){
         List<Engin> enginList = enginService.getEnginsSorties();
         List<EnginSEDTO> enginSEDTOList =new ArrayList<>();
         for (Engin engin : enginList){
             enginSEDTOList.add(new EnginSEDTO(engin));
         }
 
-        return enginSEDTOList;
+        return new ResponseEntity<>(enginSEDTOList, HttpStatus.OK);
+
     }
     @GetMapping(value="/listeEnginsEntree")
-    List<EnginSEDTO> listeEnginsEntree(){
+    ResponseEntity<?> listeEnginsEntree(){
         List<Engin> enginList = enginService.getEnginsEntrees();
         List<EnginSEDTO> enginSEDTOList =new ArrayList<>();
         for (Engin engin : enginList)
             enginSEDTOList.add(new EnginSEDTO(engin));
-        return enginSEDTOList;
+        return new ResponseEntity<>(enginSEDTOList, HttpStatus.OK);
+
     }
     @GetMapping(value="/listeEnginsDisponible/{famille}")
-    List<EnginDTO> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille){
+    ResponseEntity<?> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille){
         List<Engin> enginList = enginService.getEnginsEntreesByFamille(famille);
         List<EnginDTO> enginDTOList =new ArrayList<>();
         for (Engin engin : enginList)
         	enginDTOList.add(new EnginDTO(engin, engin.getDerniereAffectation()));
-        return enginDTOList;
+        return new ResponseEntity<>(enginDTOList, HttpStatus.OK);
+
     }
 
     @GetMapping(value="/{idEngin}")
-    EnginDTO getEngin(@PathVariable("idEngin") String idEngin){
+    ResponseEntity<?> getEngin(@PathVariable("idEngin") String idEngin){
         Engin engin = enginService.getById(idEngin);
         EnginDTO enginDTO = new EnginDTO(engin, engin.getDerniereAffectation());
-        return enginDTO;
+        return new ResponseEntity<>(enginDTO, HttpStatus.OK);
+
     }
 
 

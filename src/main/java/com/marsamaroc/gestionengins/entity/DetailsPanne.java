@@ -20,7 +20,7 @@ public class DetailsPanne implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "panne_id")
-    private Pagne panne;
+    private Panne panne;
 
     @ManyToOne
     @JoinColumn(name = "critere_id_critere")
