@@ -213,7 +213,7 @@ public class DemandeController {
 
 
     @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
-    DemandeCompletDTO ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
+    DemandeCompletDTO listeEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
         Engin engin = enginService.getById(idEngin);
         return new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation())));
     }
