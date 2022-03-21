@@ -32,6 +32,9 @@ public class Engin implements Serializable {
     private List<EnginAffecte> enginAffecteList;
 
 
+    public Famille getFamille(){
+        return famille;
+    }
 
     public void sync(Engin engin){
         if(engin == null) return;

@@ -9,6 +9,8 @@ import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -51,28 +53,28 @@ public class DemandeController {
     }
 
     @RequestMapping(value="/enregistree",method= RequestMethod.GET)
-    List<DemandeDTO> getDemandeEnregistree(){
+    ResponseEntity<?> getDemandeEnregistree(){
         List<Demande> demandeList= demandeService.findAllDemandeEnregistree();
         List<DemandeDTO> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
             demandeDTOList.add(new DemandeDTO(demande));
         }
-        return demandeDTOList;
+        return new ResponseEntity<>(demandeDTOList , HttpStatus.OK);
     }
     @RequestMapping(value="/verifiee",method= RequestMethod.GET)
-    List<DemandeDTO> getDemandeVerifiee(){
+    ResponseEntity<?> getDemandeVerifiee(){
         List<Demande> demandeList= demandeService.findAllDemandeVerifiee();
         List<DemandeDTO> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
             demandeDTOList.add(new DemandeDTO(demande));
         }
-        return demandeDTOList;
+        return new ResponseEntity<>(demandeDTOList , HttpStatus.OK);
     }
 
 
 
     @RequestMapping(value="/{id}",method= RequestMethod.GET)
-    DemandeCompletDTO getDemande(@PathVariable("id") String id ){
+    ResponseEntity<?> getDemande(@PathVariable("id") String id ){
         Demande demande = demandeService.getById(Long.parseLong(id));
         if(demande == null)
             return null;
@@ -84,17 +86,17 @@ public class DemandeController {
         }
         DemandeCompletDTO demandeCompletDTOList = new DemandeCompletDTO(
                 demande,enginDTOList);
-        return demandeCompletDTOList;
+        return new ResponseEntity<>(demandeCompletDTOList , HttpStatus.OK);
     }
 
     @PostMapping(value="/add")
-    DemandeDTO addDemande(@RequestBody Demande demande) {
+    ResponseEntity<?> addDemande(@RequestBody Demande demande) {
         Demande newDemande = demandeService.saveDamande(demande);
-        return  new DemandeDTO(newDemande);
+        return new ResponseEntity<>(new DemandeDTO(newDemande) , HttpStatus.OK);
     }
 
     @PostMapping(value="/reserver")
-    List<EnginAffecteeDTO> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) {
+    ResponseEntity<?> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) {
         List<EnginAffecteeDTO>  enginAffecteeDTOList = new ArrayList<>();
         for ( EnginAffecte enginAffecte :  enginAffecteList){
             enginAffecte.getEngin().setEtat(EtatEngin.sortie);
@@ -107,34 +109,33 @@ public class DemandeController {
             }
             enginService.update(enginAffecte.getEngin());
         }
-        return  enginAffecteeDTOList;
+        return new ResponseEntity<>(enginAffecteeDTOList , HttpStatus.OK);
     }
 
 
     @PostMapping(value="/supenginaffect")
-    EnginAffecte deletEnginAffect(@RequestBody EnginAffecte enginAffecte){
+    ResponseEntity<?>  deletEnginAffect(@RequestBody EnginAffecte enginAffecte){
         enginAffecte = enginAffecteService.getById(enginAffecte.getIdDemandeEngin());
         enginAffecteService.delete(enginAffecte);
         if(enginAffecte.getEngin().getEtat() == EtatEngin.sortie) {
             enginAffecte.getEngin().setEtat(EtatEngin.disponible);
             enginService.update(enginAffecte.getEngin());
         }
-
-        return enginAffecte;
+        return new ResponseEntity<>(enginAffecte , HttpStatus.OK);
     }
 
     @PostMapping(value="delete/{numBCI}")
-    String deletDemande(@PathVariable("numBCI") Long numBCI){
+    ResponseEntity<?> deletDemande(@PathVariable("numBCI") Long numBCI){
         Demande demande = demandeService.getById(numBCI);
         if(demande.getEnginsAffecteList().isEmpty()){
             demandeService.deletDemande(demande);
-            return "deleted";
+            return new ResponseEntity<>("deleted" , HttpStatus.OK);
         }
-        return "Error";
+        return new ResponseEntity<>("error" , HttpStatus.EXPECTATION_FAILED);
     }
 
     @PostMapping(value="/affecter")
-    List<EnginAffecteeDTO> affecterEngins(@RequestBody List<EnginAffecte> enginAffecteList) {
+    ResponseEntity<?> affecterEngins(@RequestBody List<EnginAffecte> enginAffecteList) {
 
         //Delete if is not exist
         List<EnginAffecte> enginAffecteListOld = demandeService.getById(enginAffecteList.get(0).getDemande().getNumBCI()).getEnginsAffecteList();
@@ -152,11 +153,12 @@ public class DemandeController {
             enginAffecteeDTOList.add(new EnginAffecteeDTO(enginAffecteService.saveEnginDemande(enginAffecte)));
             enginService.update(enginAffecte.getEngin());
         }
-        return enginAffecteeDTOList;
+        return new ResponseEntity<>(enginAffecteeDTOList , HttpStatus.OK);
+
     }
 
     @PostMapping(value="/controler")
-    String controleEnginsAffecte(@RequestBody List<EnginAffecte> enginAffecteList){
+    ResponseEntity<?> controleEnginsAffecte(@RequestBody List<EnginAffecte> enginAffecteList){
         for(EnginAffecte newEnginAffecte : enginAffecteList) {
             EnginAffecte enginAffecte = enginAffecteService.getById(newEnginAffecte.getIdDemandeEngin());
             if(enginAffecte.getControleEngin().isEmpty()){
@@ -177,11 +179,11 @@ public class DemandeController {
             enginAffecteService.saveEnginDemande(enginAffecte);
         }
 
-        return "Done";
+        return new ResponseEntity<>("Done" , HttpStatus.OK);
     }
 
     @PostMapping(value="/submit")
-    EnginAffecteeDTO submitDemandeSortie(@RequestBody EnginAffecte enginAffecte){
+    ResponseEntity<?> submitDemandeSortie(@RequestBody EnginAffecte enginAffecte){
         EnginAffecte enginAffecteOld = enginAffecteService.getById(enginAffecte.getIdDemandeEngin());
         enginAffecteOld.sync(enginAffecte);
         if(enginAffecte.getConducteur() != null && enginAffecte.getResponsableAffectation()!=null){
@@ -207,14 +209,15 @@ public class DemandeController {
         enginAffecteService.saveEnginDemande(enginAffecteOld);
         controleService.saveAll(enginAffecteOld.getControleEngin());
         enginService.update(enginAffecteOld.getEngin());
-        return new EnginAffecteeDTO(enginAffecteOld);
+        return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
     }
 
 
     @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
-    DemandeCompletDTO ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
+    ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
         Engin engin = enginService.getById(idEngin);
-        return new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation())));
+        return new ResponseEntity<>(new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation()))) , HttpStatus.OK);
+
     }
 
 }
