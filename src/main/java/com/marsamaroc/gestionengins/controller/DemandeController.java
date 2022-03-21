@@ -121,7 +121,7 @@ public class DemandeController {
             enginAffecte.getEngin().setEtat(EtatEngin.disponible);
             enginService.update(enginAffecte.getEngin());
         }
-        return new ResponseEntity<>(enginAffecte , HttpStatus.OK);
+        return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecte) , HttpStatus.OK);
     }
 
     @PostMapping(value="delete/{numBCI}")
