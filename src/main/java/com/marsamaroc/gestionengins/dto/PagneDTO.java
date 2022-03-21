@@ -20,7 +20,8 @@ public class PagneDTO {
         this.derniereAffectation = new EnginAffecteeDTO(panne.getDernierAffectation()) ;
         this.currentDemande = new DemandeDTO(panne.getCurrentDemande());
         this.engin = new EnginDTO(panne.getEngin(), panne.getEngin().getDerniereAffectation());
-        for(DetailsPanne detailsPanne : panne.getDetailsPanneList())
-            detailsPagneList.add(new DetailsPagneDTO(detailsPanne));
+        if(panne.getDetailsPanneList() != null)
+            for(DetailsPanne detailsPanne : panne.getDetailsPanneList())
+                detailsPagneList.add(new DetailsPagneDTO(detailsPanne));
     }
 }
