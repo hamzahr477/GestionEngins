@@ -12,7 +12,7 @@ public class FamilleServiceImp implements FamilleService {
     FamilleRepository familleRepository;
 
     @Override
-    public Famille getById(String idFamille) {
+    public Famille getById(Long idFamille) {
         return familleRepository.getById(idFamille);
     }
 
