@@ -51,14 +51,11 @@ public class EnginServiceImp implements EnginService{
 
     @Override
 	public List<Engin> getAll() {
-		// TODO Auto-generated method stub
 		return enginRepository.findAll();
 	}
 
 	@Override
 	public List<Engin> getEnginsEntreesByFamille(Long famille) {
-		// TODO Auto-generated method stub
-		
 		return enginRepository.findAllEnginEntreeByFamille(famille);
 	}
 }

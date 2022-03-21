@@ -17,14 +17,16 @@ import java.util.List;
 public interface EnginRepository extends JpaRepository<Engin,String> {
 
 
-    @Query("select e from Engin e "+
-            "where e.etat = '"+EtatEngin.sortie_value+"'")
+    @Query("select distinct e from Engin e , EnginAffecte ea" +
+            " where e.codeEngin = ea.engin.codeEngin "+
+            "and ea.etat = '"+ EtatAffectation.reserve_value+"'")
     List<Engin> findAllEnginAffecteAndPreSortie();
+
 
 
     @Query("select distinct e from Engin e , EnginAffecte ea" +
             " where e.codeEngin = ea.engin.codeEngin "+
-            "and ea.etat = '"+ EtatAffectation.reserve_value+"'")
+            "and ea.etat = '"+ EtatAffectation.enexecution_value+"'")
     List<Engin> findAllEnginSortie();
     
     @Query("select e from Engin e"+
