@@ -1,11 +1,6 @@
 package com.marsamaroc.gestionengins.configuration;
 
-import com.marsamaroc.gestionengins.entity.Critere;
-import com.marsamaroc.gestionengins.entity.Engin;
-import com.marsamaroc.gestionengins.entity.Famille;
-import com.marsamaroc.gestionengins.entity.Panne;
-import com.marsamaroc.gestionengins.entity.Post;
-import com.marsamaroc.gestionengins.entity.User;
+import com.marsamaroc.gestionengins.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +19,7 @@ public class MyCoolConfiguration  {
         restConfiguration.exposeIdsFor(Post.class);
         restConfiguration.exposeIdsFor(User.class);
         restConfiguration.exposeIdsFor(Famille.class);
+        restConfiguration.exposeIdsFor(Entite.class);
         restConfiguration.exposeIdsFor(Panne.class);
 
 

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Post implements Serializable {
     @Id
     Long codePost;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_entite")
     Entite entite;
 
