@@ -9,7 +9,6 @@ import java.util.List;
 
 @Data
 public class EnginDTO {
-
     private String codeEngin;
     private String typeEngin;
     private String capacite;
@@ -17,17 +16,10 @@ public class EnginDTO {
     private FamilleDTO famille;
     private Long idDemandeEngin;
     private String nomEngin;
-
-
     private UserDTO conducteur;
     private UserDTO responsable;
-
     //
-
-    
-
     private List<CritereDemandeDTO> critere = new ArrayList<>();
-
     public EnginDTO(Engin engin, EnginAffecte enginAffecte){
         this.nomEngin = engin.getNomEngin();
         this.codeEngin = engin.getCodeEngin();
@@ -35,7 +27,7 @@ public class EnginDTO {
         this.capacite = engin.getCapacite();
         this.compteur = engin.getCompteur();
         this.idDemandeEngin = enginAffecte!= null ? enginAffecte.getIdDemandeEngin() : null;
-        Date dateDerniereAffectation=  engin.getDerniereAffectation()!=null ? engin.getDerniereAffectation().getDateAffectation() : null ;
+        Date dateDerniereAffectation=  enginAffecte!=null ? enginAffecte.getDateAffectation() : null ;
         this.famille = new FamilleDTO(engin.getFamille(),dateDerniereAffectation);
         if(enginAffecte != null){
             this.conducteur =enginAffecte.getConducteur() == null ? null :  new UserDTO(enginAffecte.getConducteur());

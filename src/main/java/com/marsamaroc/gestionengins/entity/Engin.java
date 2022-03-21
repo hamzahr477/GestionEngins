@@ -7,6 +7,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -50,11 +53,18 @@ public class Engin implements Serializable {
     public EnginAffecte getDerniereAffectation(){
         EnginAffecte dernierEnginAffecte = null;
         if(enginAffecteList!=null){
-            dernierEnginAffecte = enginAffecteList.isEmpty() ? null : enginAffecteList.get(0);
-            for(EnginAffecte enginAffecteitm : enginAffecteList){
-                if(enginAffecteitm.getDateAffectation().compareTo(dernierEnginAffecte.getDateAffectation())>=1)
-                    dernierEnginAffecte = enginAffecteitm;
-            }
+            Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);
+            if(this.etat == EtatEngin.sortie && enginAffecteList.size()>1)
+                dernierEnginAffecte = enginAffecteList.get(1);
+            else dernierEnginAffecte = enginAffecteList.get(0);
+        }
+        return dernierEnginAffecte;
+    }
+    public EnginAffecte getCurrenteAffectation(){
+        EnginAffecte dernierEnginAffecte = null;
+        if(enginAffecteList!=null && this.etat == EtatEngin.sortie){
+            Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);
+            dernierEnginAffecte = enginAffecteList.get(0);
         }
         return dernierEnginAffecte;
     }

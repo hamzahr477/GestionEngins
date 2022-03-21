@@ -216,7 +216,7 @@ public class DemandeController {
     @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
     ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
         Engin engin = enginService.getById(idEngin);
-        return new ResponseEntity<>(new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation()))) , HttpStatus.OK);
+        return new ResponseEntity<>(new DemandeCompletDTO(engin.getCurrenteAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getCurrenteAffectation()))) , HttpStatus.OK);
     }
 
 }
