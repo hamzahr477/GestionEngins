@@ -55,7 +55,6 @@ public class Engin implements Serializable {
                 if(enginAffecteitm.getDateAffectation().compareTo(dernierEnginAffecte.getDateAffectation())>=1)
                     dernierEnginAffecte = enginAffecteitm;
             }
-            return null;
         }
         return dernierEnginAffecte;
     }
