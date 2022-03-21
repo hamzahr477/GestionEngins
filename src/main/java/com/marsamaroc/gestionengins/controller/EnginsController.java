@@ -88,7 +88,7 @@ public class EnginsController {
         List<Engin> enginList = enginService.getEnginsEntreesByFamille(famille);
         List<EnginDTO> enginDTOList =new ArrayList<>();
         for (Engin engin : enginList)
-        	enginDTOList.add(new EnginDTO(engin, engin.getDerniereAffectation()));
+        	enginDTOList.add(new EnginDTO(engin,null));
         return new ResponseEntity<>(enginDTOList, HttpStatus.OK);
 
     }

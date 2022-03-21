@@ -217,7 +217,6 @@ public class DemandeController {
     ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
         Engin engin = enginService.getById(idEngin);
         return new ResponseEntity<>(new DemandeCompletDTO(engin.getDerniereAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getDerniereAffectation()))) , HttpStatus.OK);
-
     }
 
 }
