@@ -1,0 +1,606 @@
+
+
+
+<div class="d-flex justify-content-between">
+<div class="mt-3">
+
+
+  <label class="card-title">{{router.url=='/commandes/nouvelle-commandes' ? 'Demande Affectation ===> Nouvelle Demande' :
+  (router.url=='/commandes/nouvelle-affectation')  ? 'Alloué Engins ===> Allocation' :
+   router.url=='/commandes/nouvelle-commandes' ? '' :
+
+   '' }}
+  </label>
+  </div>
+
+
+<div>
+  <button *ngIf="page== 'ncmd'"   (click)="ajouterDemande()" type="button" class="card-title btn btn-gradient-success btn-rounded btn-fw mb-2" >Ajouter la demande</button>
+  <button *ngIf="page== 'mcmd'"   (click)="ajouterDemande()" type="button" class="card-title btn btn-gradient-success btn-rounded btn-fw mb-2" >Modifier la demande</button>
+  <button *ngIf="page== 'affectation'"   (click)="affecter()" type="button" class="card-title btn btn-gradient-success btn-rounded btn-fw mb-2" >Valider</button>
+  <button *ngIf="page== 'se' && stopReservation == false"   (click)="ajouterControler()" type="button" class="card-title btn btn-gradient-success btn-rounded btn-fw mb-2" >Reserver</button>
+
+</div>
+
+</div>
+
+  <div  [formGroup]="FGCommande" class="row">
+
+<div *ngIf="page != 'engin'" class="col-md-6 grid-margin">
+  <div  class="card" style="height: 100%;">
+      <div class="p-1 mb-3 d-flex justify-content-between red-gradient" style="color:white">
+        <div></div>
+        <div>Détail demande</div>
+        <div>
+            <button class="navbar-toggler" type="button" (click)="DetailCMDisCollapsed = !DetailCMDisCollapsed" [attr.aria-expanded]="!DetailCMDisCollapsed" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+              <i class="mdi mdi-eye"></i>
+            </button>
+        </div>
+
+
+
+      </div>
+      <div class="col-12 mt-2 collapse navbar-collapse" [ngbCollapse]="DetailCMDisCollapsed" id="navbarSupportedContent" >
+        <p  class="card-description">
+
+        </p>
+        <div class="row ">
+          <div class="col-md-6">
+            <div class="form-group " >
+              <label >Num BCI: {{numBCI}}</label>
+                <input formControlName="numBCI" [ngClass]="disable_inputs == 'true' ? 'disable' : '' "  type="text" class="form-control" />
+
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group ">
+              <label >Entité </label>
+
+
+                <select formControlName="entite" [ngClass]="disable_inputs == 'true' ? 'disable' : '' " class="form-control">
+                  <option *ngFor="let item of this.listeEntite" [value]="item.id">{{item.entite}}</option>
+                </select>
+
+            </div>
+          </div>
+        </div>
+
+        <form class="row row-cols-sm-auto">
+          <div class="col-12">
+
+          </div>
+        </form>
+
+        <hr/>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group ">
+              <label >Date sortie prévue </label>
+              <div class="input-group" [ngClass]="disable_inputs == 'true' ? 'disable' : '' ">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="dp"  formControlName="dateSortie" ngbDatepicker #d="ngbDatepicker">
+                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group ">
+              <label >Shift sortie prévue</label>
+                <select formControlName="shift" [ngClass]="disable_inputs == 'true' ? 'disable' : '' " class="form-control">
+                  <option value="1" >1</option>
+                  <option value="2" >2</option>
+                  <option value="3" >3</option>
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="form-group ">
+              <label >Poste</label>
+                <select formControlName="poste" [ngClass]="disable_inputs == 'true' ? 'disable' : '' " class="form-control">
+                  <option *ngFor="let item of this.listePosts" [value]="item.codePost">{{item.codePost}}</option>
+                </select>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+  </div>
+</div>
+<div *ngIf="page != 'engin'" class="col-md-6 grid-margin">
+  <div class="card" style="height: 100%;">
+
+    <div class="p-1 mb-3 d-flex justify-content-between red-gradient" style="color:white">
+      <div></div>
+      <div>Engins demandés</div>
+      <div>
+          <button class="navbar-toggler" type="button" (click)="DetailCMDisCollapsed = !DetailCMDisCollapsed" [attr.aria-expanded]="!DetailCMDisCollapsed" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="mdi mdi-eye"></i>
+          </button>
+
+      </div>
+    </div>
+
+
+
+
+      <div class="col-12 mt-2 collapse navbar-collapse" [ngbCollapse]="DetailCMDisCollapsed" id="navbarSupportedContent" >
+        <div *ngIf="page == 'ncmd' || page == 'mcmd' " [formGroup]="formFamille" class="col-12 form-row align-items-center ">
+          <div class="col-3 ml-1 mt-1">
+            <label class="sr-only" for="nomFamille">nomFamille</label>
+            <select class="form-control mb-2" formControlName="idFamille" >
+              <option value="0"  ></option>
+              <option *ngFor="let item of list_famille"   [value]="item?.idFamille">{{item?.nomFamille}}</option>
+
+            </select>
+          </div>
+          <div class="col-3">
+            <label class="sr-only" for="quantite">quantite</label>
+            <input min="1" value="1" class="form-control mb-2" type="number" id="quantite" formControlName="quantite" placeholder="Quantite">
+          </div>
+          <div class="col-4">
+            <label class="sr-only" for="remarque">remarque</label>
+            <input class="form-control mb-2" id="remarque" formControlName="remarque" placeholder="Remarque">
+          </div>
+          <div class="col-1">
+            <button class="btn btn-icon button_red" (click)="ajoutFamille()"><i class="mdi mdi-plus-circle mr-3"></i></button>
+          </div>
+
+
+
+
+        </div>
+        <table *ngIf="this.itemsFamilles?.value != null" [formGroup]="FGEnginDemande" class="table table-bordered mt-3">
+          <thead>
+            <tr class="table-bordered">
+
+              <th>
+                Famille engin
+              </th>
+              <th>
+                Quantité
+              </th>
+              <th>
+                Remarque
+              </th>
+              <th>
+
+              </th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr formArrayName="items" *ngFor="let item of FGEnginDemande.controls.items?.value;let i = index">
+
+              <ng-container [formGroupName]="i">
+
+
+              <td style="text-align: center;">
+                <!-- <button  type="button" class="btn  btn-icon ml-2">
+                  <img class=" rounded" src="assets/images/tractor.png" alt="sample image">
+                </button><br> -->
+                {{ item.nomFamille }}
+              </td>
+              <td>
+                <input min="1" formControlName="quantite" [ngClass]="disable_inputs == 'true' ? 'disable' : '' " type="number" class="form-control">
+              </td>
+              <td>
+                <input formControlName="remarque" [ngClass]="disable_inputs == 'true' ? 'disable' : '' "  class="form-control">
+              </td>
+              <!-- <td *ngIf="disable_inputs == 'true' "> -->
+              <td *ngIf="page != 'ncmd' ">
+                <button  class="btn btn-icon" (click)="openDialogEngins(null,'add',null,item.idFamille);"><i class="mdi mdi mdi-truck"></i></button>
+              </td>
+              <td *ngIf="disable_inputs == 'false'">
+                <button class="btn btn-icon " (click)="removeFamille(i);"><i class="mdi mdi-delete " style="color: #c92f14 ;"></i></button>
+              </td>
+            </ng-container>
+            </tr>
+
+
+          </tbody>
+        </table>
+
+      </div>
+  </div>
+</div>
+
+</div>
+<div *ngIf="page== 'affectation'"  class="row">
+      <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="p-1 mb-3 text-center" style="background-color: #c92f14 !important; color:white">Nouvelle affectation</div>
+
+            <div class="table-responsive ">
+              <table [formGroup]="FGEngins" class="table table-bordered">
+                <thead>
+                  <tr class="table-bordered">
+                    <th>
+                      Famille
+                    </th>
+                    <th>
+                      Code Engin
+                    </th>
+                    <th>
+                      Type
+                    </th>
+                    <th>
+                      Capacité
+                    </th>
+                    <th>
+                      Compteur
+                    </th>
+
+                    <th>
+                      Date affectation
+                    </th>
+                    <th>
+
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr formArrayName="items" *ngFor="let item of FGEngins.controls.items?.value;let i = index" class="table-success">
+                    <ng-container [formGroupName]="i">
+
+                    <td>
+                      {{item.famille.nomFamille}}
+                    </td>
+                    <td>
+                      {{item.codeEngin}}
+                    </td>
+                    <td>
+                      {{item.typeEngin}}
+                    </td>
+                    <td>
+                      {{item.capacite}}
+                    </td>
+                    <td>
+                      {{item.compteur}}
+                    </td>
+                    <td>
+                      {{item.dateDernierAffectation}}
+                    </td>
+                    <td>
+                      <button (click)="openDialogEngins(item,'change',i,null);" type="button" class="btn  btn-icon">
+                        <img class=" rounded" src="assets/images/tractor.png" alt="sample image">
+                      </button>
+
+                    </td>
+                  </ng-container>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+        </div>
+      </div>
+</div>
+
+<div *ngIf="page=='se' || page=='engin'"  class="row">
+
+  <div [formGroup]="FGEnginCritere" class="col-md-12 grid-margin stretch-card">
+
+    <div class="card" formArrayName="engins" >
+      <div *ngIf="page != 'engin'" class="p-1 mb-3 text-center red-gradient" style=" color:white">Critéres</div>
+
+      <div class="d-flex justify-content-between">
+        <div >
+            <div class="ml-5" [innerHTML]="message_stop" >
+              {{this.message_stop}}
+            </div>
+        </div>
+
+
+        <div>
+          <button  style="color:white" *ngIf="page== 'se' && stopReservation == false"   (click)="ajouterControler()" type="button" class="btn btn-gradient-success btn-rounded btn-fw mb-2 mr-5" >Reserver</button>
+
+        </div>
+
+        </div>
+
+
+
+
+
+
+
+        <ngb-tabset>
+
+          <ngb-tab  *ngFor="let engin of getEngins(FGEnginCritere);let i = index"  [title]="page != 'engin' ? (engin.controls.codeEngin.value) :'' ">
+
+                <ng-template [formGroupName]="i" ngbTabContent>
+
+                <div class="d-flex flex-row-reverse">
+                  <span *ngIf="engin.controls.idDemandeEngin.value != null "><button *ngIf="engin.controls.codeEngin.value != null && engin.controls?.conducteur.value?.matricule == null || engin.controls?.conducteur.value?.matricule == undefined" class="btn btn-icon" (click)="openDialogSortieImprimmer(engin,i);"><i class="mdi mdi-truck-delivery"></i></button></span>
+
+                  <button *ngIf="engin.controls?.conducteur.value?.matricule == undefined" (click)="removeEngin(engin.controls.codeEngin.value);" type="button" class="btn  btn-icon">
+                    <i class="mdi mdi-delete"></i>
+                  </button>
+                  <button *ngIf="(checkAllCritereEntree(engin.controls) == true ? true :false) == true " (click)="entreeEngin(engin.controls)"  type="button" class="form-inline reverse btn  btn-icon ">
+                    <i class="mdi mdi-truck-delivery "></i>
+                  </button>
+                  <button *ngIf="engin.controls?.conducteur.value?.matricule != undefined" (click)="exportHtmlToPDF(engin.controls.codeEngin.value)"  type="button" class="form-inline btn  btn-icon ">
+                    <!-- *ngIf="engin.controls?.responsable.value?.matricule != undefined " -->
+                    <i class="mdi mdi-printer "></i>
+
+
+
+                  </button>
+
+                  <span><button  (click)="panne(engin.controls.codeEngin.value);" type="button" class="btn  btn-icon">
+                    <i class="mdi mdi-ambulance"></i>
+                  </button></span>
+
+                </div>
+
+
+                <div  [id]="'header_'+engin.controls.codeEngin.value"  class="row d-flex justify-content-center mt-3" >
+
+                  <div class="col-4 text-center pt-4 pb-3" style="border: 1px black solid;">
+                      <img src="assets/images/logo.png" alt="logo" />
+
+                    </div>
+
+                    <div class="col-6  upper-text pb-2 mr-3 " style="border: 1px black solid;">
+                      <div class="row mt-3"><div class="col-1"></div><b class="col-5 ml-5" style=" font-size: 14px;">Code : </b><b class="col-5">EN.FCE.PC.TECH.10</b></div>
+                      <div class="row mt-3"><div class="col-1"></div><b class="col-5 ml-5" style=" font-size: 14px;">fiche de controle engin : </b><b class="col-5">{{engin.controls.codeEngin.value}}</b></div>
+                      <div class="row mt-3"><div class="col-md-1"></div><b class="col-5 ml-5">BCI :</b> <b class="col-5"> {{this.numBCI}}</b></div>
+                    </div>
+                </div>
+
+
+                <div [id]="'info_'+engin.controls.codeEngin.value" class="col-md-12 mt-5 d-flex justify-content-center">
+                  <div class="card col-12" >
+                    <div class="">
+
+                      <div class="table-responsive ">
+
+                        <table   style="text-transform: uppercase;"  class="text-center table table-bordered">
+
+                          <tr>
+                            <th>Date et Heure de sortie</th>
+                            <th>{{FGCommande.get("dateSortie").value}}</th>
+                            <th>Shift</th>
+                            <th>{{FGCommande.get("shift").value}}</th>
+                          </tr>
+                          <tr>
+                            <th>code d'engin</th>
+                            <th>{{engin.controls.codeEngin.value}}</th>
+                            <th>compteur horaire</th>
+                            <th></th>
+                          </tr>
+                          <tr>
+                            <th>conducteur</th>
+                            <th>{{engin.controls?.conducteur.value?.nom}} {{engin.controls?.conducteur.value?.prenom}} </th>
+                            <th>matricule</th>
+                            <th>{{engin.controls?.conducteur.value?.matricule}}</th>
+                          </tr>
+                          <tr>
+                            <th>Responsable</th>
+                            <th>{{engin.controls?.responsable.value?.nom }} {{engin.controls?.responsable.value?.prenom}}</th>
+                            <th>MATRICULE</th>
+                            <th>{{engin.controls?.responsable.value?.matricule}}</th>
+
+                          </tr>
+                          <tr>
+                            <th>post</th>
+                            <th>{{FGCommande.get("poste").value}}</th>
+                            <th>date et heure de retour</th>
+                            <th>{{FGCommande.get("dateSortie").value}}</th>
+                          </tr>
+
+                        </table>
+
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+<div>
+
+                    <!-- <div  class="media row mt-2 ml-5 mr-5" style="border: 1px black solid;">
+                      <div class="col-3  mt-2">
+                          <b class="col-4 ">Code Engin :</b>
+
+                          <label class="col-4 ">{{engin.controls.codeEngin.value}} </label>
+
+                      </div>
+                      <div class="col-3  mt-2">
+                          <b class="col-4">Type Engin :</b>
+                          <label class="col-4">{{engin.controls.typeEngin.value}}	</label>
+                      </div>
+
+                      <div class="col-3  mt-2">
+                          <b class="col-4">Compteur :</b>
+                          <label class="col-4">{{engin.controls.compteur.value}}</label>
+                      </div>
+                      <div class="col-3  mt-2">
+                          <b class="col-4">Date d'affectation :</b>
+                          <label class="col-4">{{engin.controls.dateDernierAffectation.value}}</label>
+                      </div>
+          </div>
+                <div *ngIf="engin.controls?.conducteur.value?.matricule != undefined" class="media row mt-2 ml-5 mr-5" style="border: 1px black solid;">
+                              <div class="col-4  mt-2">
+                                  <b class="col-4 ">Conducteur :</b>
+
+                                  <label class="col-4 ">{{engin.controls?.conducteur.value?.matricule }} </label>
+
+                              </div>
+                              <div class="col-4  mt-2">
+                                  <b class="col-4">Nom :</b>
+                                  <label class="col-4">{{engin.controls?.conducteur.value?.nom}}	</label>
+                              </div>
+
+                              <div class="col-4  mt-2">
+                                  <b class="col-4">Prenom :</b>
+                                  <label class="col-4">{{engin.controls?.conducteur.value?.prenom}}</label>
+                              </div>
+                  </div>
+                  <div *ngIf="engin.controls?.responsable.value?.matricule != undefined" class="media row mt-2 ml-5 mr-5" style="border: 1px black solid;">
+                                <div class="col-4  mt-2">
+                                    <b class="col-4 ">Responsable :</b>
+
+                                    <label class="col-4 ">{{engin.controls?.responsable.value?.matricule }} </label>
+
+                                </div>
+                                <div class="col-4  mt-2">
+                                    <b class="col-4">Nom :</b>
+                                    <label class="col-4">{{engin.controls?.responsable.value?.nom}}	</label>
+                                </div>
+
+                                <div class="col-4  mt-2">
+                                    <b class="col-4">Prenom :</b>
+                                    <label class="col-4">{{engin.controls?.responsable.value?.prenom}}</label>
+                                </div>
+                    </div> -->
+
+</div>
+
+                  <div [id]="'data_'+ engin.controls.codeEngin.value" #pdfTable class="col-md-12 mt-4 d-flex justify-content-center">
+                    <div class="card col-12" >
+                      <div    >
+
+                        <div  class="table-responsive " style="margin-right: 50px !important;">
+                          <table  class="criteres table table-bordered text-center" style="margin-right: 50px !important; ">
+                            <thead  >
+                              <tr class="table-bordered ">
+
+                                <th >
+                                  <b>Critére de control Engins</b>
+                                </th>
+                                <th style="padding-right: 0px !important; width: 180px;">
+                                  <b>Sortie Engin</b>
+                                </th>
+                                <th >
+                                  <b>Observation sortie</b>
+                                </th>
+                                <th style="padding-right: 0px !important; width: 180px;" *ngIf="engin.controls?.responsable.value?.matricule != undefined " >
+                                  <b>Entrée Engin</b>
+                                </th>
+                                <th *ngIf="engin.controls?.responsable.value?.matricule != undefined  " >
+                                  <b>Observation Entrée</b>
+                                </th>
+
+                              </tr>
+                            </thead>
+                            <tbody formArrayName="critere">
+                              <tr  *ngFor="let item_critere of getCriteres(engin);let j = index" [ngClass]="item_critere['controls'].etatSortie.value != 'o' ? 'table-warning' : '' ">
+
+                              <ng-container [formGroupName]="j" >
+
+
+
+                                <td class="">
+                                            <b>{{item_critere["controls"].nomCritere.value}}</b>
+                                </td>
+                                <td   style="width: 180px;padding-right: 0px !important;" [ngClass]="engin.controls.sortie.value != null || engin.controls.idDemandeEngin.value != null  ? 'disable-green' : '' " class="d-flex justify-content-center form-inline text-center">
+                                  <div class="form-check mr-3">
+                                    <label class="form-check-label">
+                                      <input (change)="checkNonCritere()" formControlName="etatSortie" type="radio" class="form-check-input" value="o"    checked>
+                                      Oui
+                                      <i class="input-helper"></i>
+                                    </label>
+                                  </div>
+                                  <div class="form-check">
+                                    <label class="form-check-label">
+                                      <input (change)="checkNonCritere()"  formControlName="etatSortie" type="radio" class="form-check-input" value="n"    checked>
+                                      Non
+                                      <i class="input-helper"></i>
+                                    </label>
+                                  </div>
+                                </td>
+                                <td style="width: 350px;" [ngClass]="engin.controls.sortie.value != null ? 'disable' : '' ">
+                                  <input style="height: 1;" class="form-control">
+                                </td>
+                                <td style="padding-right: 0px !important; width: 180px;" *ngIf="engin.controls?.responsable.value?.matricule != undefined " [ngClass]="engin.controls.entree.value != null ? 'disable-green' : '' " class="d-flex justify-content-center form-inline" >
+                                  <div class="form-check mr-2">
+                                    <label class="form-check-label">
+                                      <input (change)="checkAllCritereEntree(engin.controls)" formControlName="etatEntree" type="radio" class="form-check-input"   value="o" checked>
+                                      Oui
+                                      <i class="input-helper"></i>
+                                    </label>
+                                  </div>
+                                  <div class="form-check">
+                                    <label class="form-check-label">
+                                      <input (change)="checkAllCritereEntree(engin.controls)" formControlName="etatEntree" type="radio" class="form-check-input"   value="n" checked>
+                                      Non
+                                      <i class="input-helper"></i>
+                                    </label>
+                                  </div>
+                                </td>
+                                <td style="width: 350px;" *ngIf="engin.controls?.responsable.value?.matricule != undefined " [ngClass]="engin.controls.entree.value != null ? 'disable-green' : '' ">
+                                  <input class="form-control">
+                                </td>
+
+                              </ng-container>
+                              </tr>
+
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div [id]="'signature_'+ engin.controls.codeEngin.value"  class="col-md-12 mt-5 d-flex justify-content-center">
+                    <div class="card col-12" >
+                      <div class="">
+
+                        <div class="table-responsive ">
+
+                          <table   style="text-transform: uppercase;"  class="table table-bordered text-center ">
+
+                            <tr >
+                              <th colspan="2" >Sortie Engin</th>
+                            </tr>
+                            <tr class="pt-5 pb-5">
+                              <th>SIGNATURE TECHNICIEN MARSA MAROC</th>
+                              <th>SIGNATURE CONDUCTEUR MARSA MAROC</th>
+                            </tr>
+                            <tr style="height: 70px;">
+                              <th></th>
+                              <th></th>
+                            </tr>
+                            <tr >
+                              <th colspan="2" >Retour Engin</th>
+                            </tr>
+                            <tr >
+                              <th>SIGNATURE TECHNICIEN MARSA MAROC</th>
+                              <th>SIGNATURE CONDUCTEUR MARSA MAROC</th>
+                            </tr>
+                            <tr style="height: 70px;">
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </table>
+                        </div>
+                     </div>
+                     </div>
+                    </div>
+                </ng-template>
+
+
+
+
+
+          </ngb-tab>
+
+
+        </ngb-tabset>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+

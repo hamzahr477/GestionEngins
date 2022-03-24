@@ -1,0 +1,152 @@
+
+
+<div [formGroup]="FGConducteur" class="panel panel-success card" style="border: 1px #c92f14  solid;">
+  <div class="p-1 mb-3 text-center" style="background-color: #c92f14 !important; color:white">Conducteur</div>
+  <div class="panel-body col-md-12  row mb-3">
+
+        <div class="col-4  mt-2 ">
+          <b class="col-4">Matricule :</b>
+          <input class="col-8"  formControlName="matricule">
+      </div>
+      <div class="col-4  mt-2">
+          <b class="col-4 ">Nom :</b>
+          <input class="col-8" formControlName="nom">
+      </div>
+      <div class="col-4  mt-2">
+          <b class="col-4 ">prenom :</b>
+          <input class="col-8" formControlName="prenom">
+      </div>
+
+  </div>
+</div>
+<div [formGroup]="FGResponsableAffectation" class="panel panel-success card mt-4" style="border: 1px #c92f14 solid;">
+      <div class="p-1 mb-3 text-center" style="background-color: #c92f14 !important; color:white">Responsable d'affectation</div>
+      <div class="panel-body col-md-12  row mb-3">
+
+      <div class="col-4  mt-2">
+          <b class="col-4 ">Matricule :</b>
+          <input class="col-8" formControlName="matricule">
+      </div>
+      <div class="col-4  mt-2">
+        <b class="col-4 ">Nom :</b>
+        <input class="col-8" formControlName="nom">
+    </div>
+    <div class="col-4  mt-2">
+        <b class="col-4 ">prenom :</b>
+        <input class="col-8" formControlName="prenom">
+    </div>
+    </div>
+
+</div>
+
+<div [formGroup]="FGEnginCritere" class="panel panel-success card mt-4" style="border: 1px #c92f14 solid;">
+  <div class="p-1 mb-3 text-center" style="background-color: #c92f14 !important; color:white">Engin : {{FGEnginCritere.controls.codeEngin.value}}</div>
+     <div class=" col-12  row " >
+
+        <div class="col-3  ">
+            <b class="col-2 ">Code Engin :</b>
+
+            <label class="col-5 "> {{FGEnginCritere.controls.codeEngin.value}}</label>
+
+        </div>
+        <div class="col-3  ">
+            <b class="col-2">Type Engin :</b>
+            <label class="col-5">	{{FGEnginCritere.controls.typeEngin.value}}</label>
+        </div>
+        <div class="col-3  ">
+            <b class="col-2">Capacité :</b>
+            <label class="col-5">{{FGEnginCritere.controls.capacite.value}}</label>
+        </div>
+        <div class="col-3  ">
+            <b class="col-2">Compteur :</b>
+            <label class="col-5">{{FGEnginCritere.controls.compteur.value}}</label>
+        </div>
+    </div>
+
+    <div class="col-md-12 grid-margin">
+    <div class="card">
+    <div class="card-body">
+
+    <div class="table-responsive ">
+    <table class="table table-bordered">
+      <thead>
+        <tr class="table-bordered">
+
+          <th>
+            <b>Critére de control Engins</b>
+          </th>
+          <th>
+            <b>Etat sortie Engin</b>
+          </th>
+          <th>
+            <b>Observation sortie</b>
+          </th>
+          <th *ngIf="entree != null">
+            <b>Etat Entrée Engin</b>
+          </th>
+          <th *ngIf="entree != null">
+            <b>Observation Entrée</b>
+          </th>
+
+        </tr>
+      </thead>
+      <tbody formArrayName="critere">
+        <tr  *ngFor="let item_critere of getCriteres();let j = index">
+
+        <ng-container [formGroupName]="j" >
+
+
+
+          <td class="">
+                      <b>{{item_critere["controls"].nomCritere.value}}</b>
+          </td>
+          <td class="form-inline">
+            <div class="form-check mr-5">
+              <label class="form-check-label">
+                <input formControlName="etatSortie" type="radio" class="form-check-input" value="o"  id="optionsRadios2"  checked>
+                Oui
+                <i class="input-helper"></i>
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input formControlName="etatSortie" type="radio" class="form-check-input" value="n"  id="optionsRadios2"  checked>
+                Non
+                <i class="input-helper"></i>
+              </label>
+            </div>
+          </td>
+          <td>
+            <input class="form-control">
+          </td>
+          <td class="form-inline" *ngIf="entree != null">
+            <div class="form-check mr-5">
+              <label class="form-check-label">
+                <input formControlName="etatEntree" type="radio" class="form-check-input"  id="optionsRadios2" value="o" checked>
+                Oui
+                <i class="input-helper"></i>
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input formControlName="etatEntree" type="radio" class="form-check-input"  id="optionsRadios2" value="n" checked>
+                Non
+                <i class="input-helper"></i>
+              </label>
+            </div>
+          </td>
+          <td *ngIf="entree != null">
+            <input class="form-control">
+          </td>
+
+        </ng-container>
+        </tr>
+
+      </tbody>
+    </table>
+
+    </div>
+    </div>
+    </div>
+    </div>
+</div>

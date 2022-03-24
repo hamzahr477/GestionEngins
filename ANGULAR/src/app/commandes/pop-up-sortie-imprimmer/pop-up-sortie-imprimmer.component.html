@@ -1,0 +1,76 @@
+<div >
+{{error_message}}
+<div [formGroup]="conducteur" class="form-inline">
+
+  <mat-form-field class="example-full-width col-5" appearance="fill">
+    <mat-label>Matricule Conducteur</mat-label>
+    <input (keyup)="checkifExiste('conducteur')" (change)="checkifExiste('conducteur')"  matInput
+           aria-label="User"
+           [matAutocomplete]="auto"
+           [formControl]="ConducteurMatricule" >
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let User of filteredUsers | async" [value]="User.matricule">
+        <span>{{User.matricule}}</span> |
+        <small>nom: {{User.nom}}</small>
+        <small> prenom: {{User.prenom}}</small>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field [ngClass]="disableConducteur ? 'disable' : ''" class="example-form-field" appearance="fill">
+    <mat-label>Nom conducteur</mat-label>
+    <input matInput type="text" formControlName="ConducteurNom">
+    <button *ngIf="this.conducteur.get('ConducteurNom').value" matSuffix mat-icon-button aria-label="Clear" (click)="this.conducteur.get('ConducteurNom').reset()" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field [ngClass]="disableConducteur ? 'disable' : ''" class="example-form-field" appearance="fill">
+    <mat-label>Prenom conducteur</mat-label>
+    <input matInput type="text" formControlName="ConducteurPrenom">
+    <button *ngIf="this.conducteur.get('ConducteurPrenom').value" matSuffix mat-icon-button aria-label="Clear" (click)="this.conducteur.get('ConducteurPrenom').reset()" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+</div>
+
+
+
+<div [formGroup]="responsable" class="form-inline">
+
+  <mat-form-field class="example-full-width col-5" appearance="fill">
+    <mat-label>Matricule Responsable</mat-label>
+    <input (keyup)="checkifExiste('responsable')" (change)="checkifExiste('responsable')"  matInput
+           aria-label="Responsable"
+           [matAutocomplete]="auto_respo"
+           [formControl]="ResponsableMatricule" >
+    <mat-autocomplete #auto_respo="matAutocomplete">
+      <mat-option  *ngFor="let responsable of filteredResponsable | async" [value]="responsable.matricule">
+        <span>{{responsable.matricule}}</span> |
+        <small>nom: {{responsable.nom}}</small>
+        <small> prenom: {{responsable.prenom}}</small>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field [ngClass]="disableResponsable ? 'disable' : ''" class="example-form-field" appearance="fill">
+    <mat-label>Nom Responsable</mat-label>
+    <input matInput type="text" formControlName="ResponsableNom">
+    <button  *ngIf="this.responsable.get('ResponsableNom').value" matSuffix mat-icon-button aria-label="Clear" (click)="this.responsable.get('ResponsableNom').reset()" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field [ngClass]="disableResponsable ? 'disable' : ''" class="example-form-field" appearance="fill">
+    <mat-label>Prenom Responsable</mat-label>
+    <input matInput type="text" formControlName="ResponsablePrenom">
+    <button *ngIf="this.responsable.get('ResponsablePrenom').value" matSuffix mat-icon-button aria-label="Clear" (click)="this.responsable.get('ResponsablePrenom').reset()" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+</div>
+<button class="ml-3 btn btn-success" (click)="sortie()">Sortie</button>
+
+</div>
