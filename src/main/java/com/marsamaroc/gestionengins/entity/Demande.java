@@ -17,7 +17,7 @@ public class  Demande implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     Long numBCI;
-    Date dateDemande = new Date();
+    Date dateDemande ;
     Date dateSortie;
     int shift;
     @ManyToOne

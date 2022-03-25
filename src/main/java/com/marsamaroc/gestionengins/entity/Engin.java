@@ -50,7 +50,9 @@ public class Engin implements Serializable {
         this.disponibiliteParck = engin.getDisponibiliteParck()!=null ? engin.getDisponibiliteParck() : this.disponibiliteParck;
     }
 
-    public EnginAffecte getDerniereAffectation(){
+    public EnginAffecte
+
+    getDerniereAffectation(){
         EnginAffecte dernierEnginAffecte = null;
         if(enginAffecteList!=null){
             Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);

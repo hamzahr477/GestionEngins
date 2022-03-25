@@ -18,9 +18,11 @@ public class EnginDTO {
     private String nomEngin;
     private UserDTO conducteur;
     private UserDTO responsable;
+    private Date dateEntree;
     //
     private List<CritereDemandeDTO> critere = new ArrayList<>();
     public EnginDTO(Engin engin, EnginAffecte enginAffecte){
+        this.dateEntree= enginAffecte!=null? enginAffecte.getDateEntree() : this.dateEntree;
         this.nomEngin = engin.getNomEngin();
         this.codeEngin = engin.getCodeEngin();
         this.typeEngin = engin.getTypeEngin();

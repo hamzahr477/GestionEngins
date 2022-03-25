@@ -32,6 +32,4 @@ public class PanneController {
         panne.setEngin(engin);
         return new PagneDTO(panneService.saveOrUpdatePagne(panne));
     }
-
-
 }

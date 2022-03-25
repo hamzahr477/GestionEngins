@@ -47,6 +47,7 @@ public class DemandeController {
         List<Demande> demandeList= demandeService.findAllDemande();
         List<DemandeDTO> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
+            if(demande.getDateDemande()==null) demande.setDateDemande(new Date());
             demandeDTOList.add(new DemandeDTO(demande));
         }
         return demandeDTOList;
