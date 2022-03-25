@@ -11,8 +11,10 @@ public class EnginAffecteeDTO {
     private String codeEngin ;
     private Long numBCI;
     private Date dateEntre;
+    private Date dateSortie;
 
     public EnginAffecteeDTO(EnginAffecte enginAffecte){
+        dateSortie = enginAffecte.getDateSortie();
         dateEntre = enginAffecte.getDateEntree();
         idEnginAffect = enginAffecte != null ?enginAffecte.getIdDemandeEngin(): null ;
         codeEngin = enginAffecte != null ? enginAffecte.getEngin().getCodeEngin(): null ;

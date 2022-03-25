@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class CritereDemandeDTO {
 
-
     Long idCritere;
     String nomCritere;
     char etatEntree;
