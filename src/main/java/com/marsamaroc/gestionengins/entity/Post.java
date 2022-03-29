@@ -13,6 +13,7 @@ public class Post implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_entite")
     Entite entite;
+    boolean deleted = false;
 
     public void sync(Post post){
         if(post == null) return;

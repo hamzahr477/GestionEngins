@@ -11,5 +11,7 @@ public class Critere implements Serializable {
     @Id
     private Long idCritere;
     private String nomCritere;
+    boolean deleted = false;
+
 
 }

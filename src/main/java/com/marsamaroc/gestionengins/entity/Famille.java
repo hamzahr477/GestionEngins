@@ -14,6 +14,7 @@ public class Famille implements Serializable {
     String codeFamille;
     String nomFamille;
     String icon;
+    boolean deleted = false;
 
     @OneToMany(mappedBy="famille")
     List<Engin> engin;

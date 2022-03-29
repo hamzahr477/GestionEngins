@@ -34,10 +34,8 @@ public class Engin implements Serializable {
     @OneToMany(mappedBy = "engin")
     private List<EnginAffecte> enginAffecteList;
 
+    boolean deleted = false;
 
-    public Famille getFamille(){
-        return famille;
-    }
 
     public void sync(Engin engin){
         if(engin == null) return;
@@ -58,7 +56,8 @@ public class Engin implements Serializable {
             Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);
             if(this.etat == EtatEngin.sortie && enginAffecteList.size()>1)
                 dernierEnginAffecte = enginAffecteList.get(1);
-            else dernierEnginAffecte = enginAffecteList.get(0);
+            else     if(!enginAffecteList.isEmpty())
+                dernierEnginAffecte = enginAffecteList.get(0);
         }
         return dernierEnginAffecte;
     }
@@ -66,7 +65,8 @@ public class Engin implements Serializable {
         EnginAffecte dernierEnginAffecte = null;
         if(enginAffecteList!=null && this.etat == EtatEngin.sortie){
             Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);
-            dernierEnginAffecte = enginAffecteList.get(0);
+            if(!enginAffecteList.isEmpty())
+                dernierEnginAffecte = enginAffecteList.get(0);
         }
         return dernierEnginAffecte;
     }

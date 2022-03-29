@@ -28,12 +28,8 @@ public class PostController {
     @GetMapping(value="/get")
 
     List<PostDTO> findAll(){
-
         List<PostDTO> listPostsDTO = new ArrayList<>();
-
         List<Post> listPosts = postService.findAll();
-
-
 
         for(Post post_ : listPosts) {
 
