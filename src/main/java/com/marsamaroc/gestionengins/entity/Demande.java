@@ -1,7 +1,6 @@
 package com.marsamaroc.gestionengins.entity;
 
 import com.marsamaroc.gestionengins.enums.EtatAffectation;
-import com.marsamaroc.gestionengins.enums.EtatEngin;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class  Demande implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "demande_responsable")
-    private User user;
+    private Utilisateur utilisateur;
 
     public int getQuantite(){
         int totalEngin=0;

@@ -19,7 +19,7 @@ public class Entite implements Serializable {
     List<Post> posts;
 
     @OneToMany(mappedBy="entite")
-    List<User> userList;
+    List<Utilisateur> utilisateurList;
 
 
 

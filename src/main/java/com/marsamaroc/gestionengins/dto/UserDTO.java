@@ -1,13 +1,8 @@
 package com.marsamaroc.gestionengins.dto;
 
-import com.marsamaroc.gestionengins.entity.Famille;
-import com.marsamaroc.gestionengins.entity.User;
+import com.marsamaroc.gestionengins.entity.Utilisateur;
 
 import lombok.Data;
-
-import java.util.Date;
-
-import javax.persistence.Column;
 
 @Data
 public class UserDTO {
@@ -23,15 +18,15 @@ public class UserDTO {
 	    
 //-----
     
-	public UserDTO(User user){
-        this.id = user.getId();
-        this.prenom = user.getPrenom();
-        this.matricule = user.getMatricule();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.enable = user.getEnable();
-        this.type = user.getType();
-        this.nom = user.getNom();
+	public UserDTO(Utilisateur utilisateur){
+        this.id = utilisateur.getId();
+        this.prenom = utilisateur.getPrenom();
+        this.matricule = utilisateur.getMatricule();
+        this.email = utilisateur.getEmail();
+        this.password = utilisateur.getPassword();
+        this.enable = utilisateur.getEnable();
+        this.type = utilisateur.getType();
+        this.nom = utilisateur.getNom();
 
     }
     

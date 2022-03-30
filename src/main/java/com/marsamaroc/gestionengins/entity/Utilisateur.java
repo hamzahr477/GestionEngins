@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class User implements Serializable {
+public class Utilisateur implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +25,7 @@ public class User implements Serializable {
     @JoinColumn(name = "id_entite")
     private Entite entite;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy= "utilisateur")
     private List<Demande> demandeList;
 
     @OneToMany(mappedBy = "responsableAffectation")

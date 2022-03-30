@@ -1,6 +1,6 @@
 package com.marsamaroc.gestionengins.service;
 
-import com.marsamaroc.gestionengins.entity.User;
+import com.marsamaroc.gestionengins.entity.Utilisateur;
 import com.marsamaroc.gestionengins.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,30 +11,30 @@ public class UserServiceImp implements UserService{
     @Autowired
     UserRepository userRepository;
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public Utilisateur saveUser(Utilisateur utilisateur) {
+        return userRepository.save(utilisateur);
     }
 
     @Override
-    public User getUserById(Long id) {
+    public Utilisateur getUserById(Long id) {
         return userRepository.getById(id);
     }
 
     @Override
-    public List<User> getUsres() {
+    public List<Utilisateur> getUsres() {
         return userRepository.findAll();
     }
 
     @Override
-    public User saveUserIfNotExist(User user){
-        System.out.println(user.getMatricule());
-        User user_Test = getUserByMatricule(user.getMatricule());
-        if (user_Test == null)
-            user_Test = saveUser(user);
-        return user_Test;
+    public Utilisateur saveUserIfNotExist(Utilisateur utilisateur){
+        System.out.println(utilisateur.getMatricule());
+        Utilisateur utilisateur_Test = getUserByMatricule(utilisateur.getMatricule());
+        if (utilisateur_Test == null)
+            utilisateur_Test = saveUser(utilisateur);
+        return utilisateur_Test;
     }
     @Override
-    public User getUserByMatricule(String matricule) {
+    public Utilisateur getUserByMatricule(String matricule) {
         return userRepository.findByMatricule(matricule);
     }
 }

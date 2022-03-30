@@ -31,11 +31,11 @@ public class EnginAffecte implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "affectation_responsable")
-    private User responsableAffectation;
+    private Utilisateur responsableAffectation;
 
     @ManyToOne
     @JoinColumn(name = "conducteur")
-    private User conducteur;
+    private Utilisateur conducteur;
 
 
 

@@ -193,8 +193,8 @@ public class DemandeController {
             enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getPost().getEntite());
             enginAffecte.getConducteur().setEnable('N');
             enginAffecte.getConducteur().setType("Conducteur");
-            User responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
-            User conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
+            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
+            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
             enginAffecteOld.setResponsableAffectation(responsable);
             enginAffecteOld.setConducteur(conducteur);
         }

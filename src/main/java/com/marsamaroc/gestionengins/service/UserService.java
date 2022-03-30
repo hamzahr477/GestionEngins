@@ -1,17 +1,17 @@
 package com.marsamaroc.gestionengins.service;
 
-import com.marsamaroc.gestionengins.entity.User;
+import com.marsamaroc.gestionengins.entity.Utilisateur;
 
 import java.util.List;
 
 public interface UserService {
-    User saveUser(User user);
-    User getUserById(Long id);
-    List<User> getUsres();
+    Utilisateur saveUser(Utilisateur utilisateur);
+    Utilisateur getUserById(Long id);
+    List<Utilisateur> getUsres();
 
-    User saveUserIfNotExist(User user);
+    Utilisateur saveUserIfNotExist(Utilisateur utilisateur);
 
-    User getUserByMatricule(String matricule);
+    Utilisateur getUserByMatricule(String matricule);
 
 
 }

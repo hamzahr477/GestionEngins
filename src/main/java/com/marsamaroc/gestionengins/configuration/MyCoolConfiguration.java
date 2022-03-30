@@ -17,7 +17,7 @@ public class MyCoolConfiguration  {
         restConfiguration.exposeIdsFor(Critere.class);
         restConfiguration.exposeIdsFor(Engin.class);
         restConfiguration.exposeIdsFor(Post.class);
-        restConfiguration.exposeIdsFor(User.class);
+        restConfiguration.exposeIdsFor(Utilisateur.class);
         restConfiguration.exposeIdsFor(Famille.class);
         restConfiguration.exposeIdsFor(Entite.class);
         restConfiguration.exposeIdsFor(Panne.class);
