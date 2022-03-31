@@ -7,7 +7,9 @@ import com.marsamaroc.gestionengins.dto.EnginDTO;
 import com.marsamaroc.gestionengins.entity.*;
 import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
+import com.marsamaroc.gestionengins.repository.UserRepository;
 import com.marsamaroc.gestionengins.service.*;
+import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -182,6 +184,8 @@ public class DemandeController {
 
         return new ResponseEntity<>("Done" , HttpStatus.OK);
     }
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping(value="/submit")
     ResponseEntity<?> submitDemandeSortie(@RequestBody EnginAffecte enginAffecte){
@@ -193,8 +197,8 @@ public class DemandeController {
             enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getPost().getEntite());
             enginAffecte.getConducteur().setEnable('N');
             enginAffecte.getConducteur().setType("Conducteur");
-            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
-            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
+            Utilisateur conducteur = userService.saveUser(enginAffecte.getConducteur());
+            Utilisateur responsable = userService.saveUser(enginAffecte.getResponsableAffectation());
             enginAffecteOld.setResponsableAffectation(responsable);
             enginAffecteOld.setConducteur(conducteur);
         }

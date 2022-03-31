@@ -51,8 +51,6 @@ public class EnginAffecte implements Serializable {
         this.dateEntree = enginAffecte.dateEntree != null ? enginAffecte.getDateEntree() : this.dateEntree;
         this.dateSortie = enginAffecte.dateSortie != null ? enginAffecte.getDateSortie() : this.dateSortie;
         this.dateAffectation = enginAffecte.dateAffectation != null ? enginAffecte.getDateAffectation() : this.dateAffectation;
-        this.responsableAffectation = enginAffecte.responsableAffectation !=null ? enginAffecte.getResponsableAffectation() : this.responsableAffectation;
-        this.conducteur = enginAffecte.conducteur != null ? enginAffecte.getConducteur() : this.conducteur;
 
     }
 }
