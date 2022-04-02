@@ -4,6 +4,7 @@ package com.marsamaroc.gestionengins.entity;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.enums.DisponibiliteEnginParck;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @Entity
+@ToString
 public class Engin implements Serializable {
     @Id
     private String codeEngin;

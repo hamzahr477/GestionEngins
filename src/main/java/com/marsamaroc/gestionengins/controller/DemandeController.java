@@ -85,7 +85,6 @@ public class DemandeController {
         for(EnginAffecte enginAffecte : demande.getEnginsAffecteList()){
             EnginDTO enginDTO= new EnginDTO(enginAffecte.getEngin()  , enginAffecte);
             enginDTOList.add(enginDTO);
-            System.out.println(enginDTO.getFamille().getDateDerniereAffectation());
         }
         DemandeCompletDTO demandeCompletDTOList = new DemandeCompletDTO(
                 demande,enginDTOList);
@@ -197,8 +196,8 @@ public class DemandeController {
             enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getPost().getEntite());
             enginAffecte.getConducteur().setEnable('N');
             enginAffecte.getConducteur().setType("Conducteur");
-            Utilisateur conducteur = userService.saveUser(enginAffecte.getConducteur());
-            Utilisateur responsable = userService.saveUser(enginAffecte.getResponsableAffectation());
+            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
+            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
             enginAffecteOld.setResponsableAffectation(responsable);
             enginAffecteOld.setConducteur(conducteur);
         }
