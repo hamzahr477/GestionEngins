@@ -13,5 +13,8 @@ public interface UserService {
 
     Utilisateur getUserByMatricule(String matricule);
 
+    List<Utilisateur> getCondicteursDispo();
+
+    List<Utilisateur> getResponsable();
 
 }

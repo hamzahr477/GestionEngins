@@ -5,8 +5,11 @@ import com.marsamaroc.gestionengins.dto.DemandeCompletDTO;
 import com.marsamaroc.gestionengins.dto.EnginAffecteeDTO;
 import com.marsamaroc.gestionengins.dto.EnginDTO;
 import com.marsamaroc.gestionengins.entity.*;
+import com.marsamaroc.gestionengins.enums.DisponibiliteEnginParck;
 import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
+import com.marsamaroc.gestionengins.enums.TypeUser;
+import com.marsamaroc.gestionengins.exception.*;
 import com.marsamaroc.gestionengins.repository.UserRepository;
 import com.marsamaroc.gestionengins.service.*;
 import javafx.scene.canvas.GraphicsContext;
@@ -44,6 +47,9 @@ public class DemandeController {
     CritereService critereService;
     @Autowired
     UserService userService;
+    @Autowired
+    UserRepository userRepository;
+
     @RequestMapping(value="/all",method= RequestMethod.GET)
     List<DemandeDTO> getAllDemande(){
         List<Demande> demandeList= demandeService.findAllDemande();
@@ -77,10 +83,8 @@ public class DemandeController {
 
 
     @RequestMapping(value="/{id}",method= RequestMethod.GET)
-    ResponseEntity<?> getDemande(@PathVariable("id") String id ){
-        Demande demande = demandeService.getById(Long.parseLong(id));
-        if(demande == null)
-            return null;
+    ResponseEntity<?> getDemande(@PathVariable("id") String id ) throws ResourceNotFoundException {
+        Demande demande = demandeService.findById(Long.parseLong(id)).orElseThrow(()->new ResourceNotFoundException("Demande not found for this id :: "+id));
         List<EnginDTO> enginDTOList = new ArrayList<>();
         for(EnginAffecte enginAffecte : demande.getEnginsAffecteList()){
             EnginDTO enginDTO= new EnginDTO(enginAffecte.getEngin()  , enginAffecte);
@@ -98,19 +102,33 @@ public class DemandeController {
     }
 
     @PostMapping(value="/reserver")
-    ResponseEntity<?> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) {
+    ResponseEntity<?> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) throws ResourceNotFoundException {
         List<EnginAffecteeDTO>  enginAffecteeDTOList = new ArrayList<>();
         for ( EnginAffecte enginAffecte :  enginAffecteList){
-            enginAffecte.getEngin().setEtat(EtatEngin.sortie);
-            enginAffecte.setIdDemandeEngin(enginAffecteService.saveEnginDemande(enginAffecte).getIdDemandeEngin());
-            enginAffecteeDTOList.add(new EnginAffecteeDTO(enginAffecte));
-            for(Controle controle : enginAffecte.getControleEngin()){
-                Controle oldControle = controleService.getControlByIdCritereAndIdAffectation(controle.getCritere().getIdCritere(),enginAffecte.getIdDemandeEngin());
-                controle.setId(oldControle==null ? null : oldControle.getId());
-                controleService.save(controle , enginAffecte);
+            Engin engin_ = enginService.findById(enginAffecte.getEngin().getCodeEngin()).orElseThrow(
+                    ()->new ResourceNotFoundException("Engin not found for this id :: "+enginAffecte.getEngin().getCodeEngin())
+            );
+            EnginAffecte enginAffOld = enginAffecteService.getByEnginAndDemande(enginAffecte.getEngin(),enginAffecte.getDemande());
+            if(enginAffOld == null ){
+                if(engin_.getEtat() == EtatEngin.disponible && engin_.getDisponibiliteParck() == DisponibiliteEnginParck.disponible){
+                    Demande demande = demandeService.getById(enginAffecte.getDemande().getNumBCI());
+                    Engin engin = enginService.getById(enginAffecte.getEngin().getCodeEngin());
+                    if(demande.getQuantiteByFamille(engin.getFamille().getIdFamille())>demande.getNbrAffectByFamille(engin.getFamille().getIdFamille())) {
+                        enginAffecte.getEngin().setEtat(EtatEngin.sortie);
+                        enginAffecte.setIdDemandeEngin(enginAffecteService.saveEnginDemande(enginAffecte).getIdDemandeEngin());
+                        for (Controle controle : enginAffecte.getControleEngin()) {
+                            Controle oldControle = controleService.getControlByIdCritereAndIdAffectation(controle.getCritere().getIdCritere(), enginAffecte.getIdDemandeEngin());
+                            controle.setId(oldControle == null ? null : oldControle.getId());
+                            controleService.save(controle, enginAffecte);
+                        }
+                        enginService.update(enginAffecte.getEngin());
+                        enginAffOld = enginAffecte;
+                        enginAffecteeDTOList.add(new EnginAffecteeDTO(enginAffOld));
+                    }
+                }else return new ResponseEntity<>(new EnginNotDisponibleException("Engin with id ::"+enginAffecte.getEngin().getCodeEngin()+" not disponible"), HttpStatus.EXPECTATION_FAILED);
             }
-            enginService.update(enginAffecte.getEngin());
         }
+
         return new ResponseEntity<>(enginAffecteeDTOList , HttpStatus.OK);
     }
 
@@ -133,8 +151,87 @@ public class DemandeController {
             demandeService.deletDemande(demande);
             return new ResponseEntity<>("deleted" , HttpStatus.OK);
         }
-        return new ResponseEntity<>("error" , HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(new AffectDemandDeleteException("Demande Not enable to remove") , HttpStatus.EXPECTATION_FAILED);
     }
+
+    @PostMapping(value="/sortie")
+    ResponseEntity<?> sortieEngin(@RequestBody EnginAffecte enginAffecte) throws ResourceNotFoundException {
+        EnginAffecte enginAffecteOld = enginAffecteService.findById(enginAffecte.getIdDemandeEngin()).orElseThrow(
+                ()->new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecte.getIdDemandeEngin())
+        );
+        if(enginAffecte.getConducteur() != null && enginAffecte.getResponsableAffectation()!=null) {
+            enginAffecte.getResponsableAffectation().setType(TypeUser.responsable);
+            enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getEntite());
+            enginAffecte.getConducteur().setType(TypeUser.conducteur);
+            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
+            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
+            if(conducteur.isDisponible()){
+                enginAffecteOld.setResponsableAffectation(responsable);
+                enginAffecteOld.setConducteur(conducteur);
+                enginAffecteOld.setEtat(EtatAffectation.enexecution);
+                enginAffecteOld.setDateSortie(new Date());
+                enginAffecteService.saveEnginDemande(enginAffecteOld);
+                enginService.update(enginAffecteOld.getEngin());
+                return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
+            }
+            return new ResponseEntity<>(new ConducteurNotDisponibleException("Condicteur whit matricule :: "+conducteur.getMatricule()+" not disponible"), HttpStatus.EXPECTATION_FAILED);
+        }
+        return new ResponseEntity<>(new NullParamException("Condicteur or Responsable Param is null"), HttpStatus.EXPECTATION_FAILED);
+        }
+    @PostMapping(value="/entree")
+    ResponseEntity<?> entreeEngin(@RequestBody EnginAffecte enginAffecte) throws ResourceNotFoundException {
+        EnginAffecte enginAffecteOld = enginAffecteService.findById(enginAffecte.getIdDemandeEngin()).orElseThrow(
+                ()->new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecte.getIdDemandeEngin())
+        );
+        enginAffecteOld.sync(enginAffecte);
+        enginAffecteOld.setEtat(EtatAffectation.execute);
+        enginAffecteOld.getEngin().setEtat(EtatEngin.disponible);
+        enginAffecteOld.setDateEntree(new Date());
+        enginAffecteService.saveEnginDemande(enginAffecteOld);
+        controleService.saveAll(enginAffecteOld.getControleEngin());
+        enginService.update(enginAffecteOld.getEngin());
+        return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
+    }
+
+
+    @PostMapping(value="/submit")
+    ResponseEntity<?> submitDemandeSortie(@RequestBody EnginAffecte enginAffecte){
+        EnginAffecte enginAffecteOld = enginAffecteService.getById(enginAffecte.getIdDemandeEngin());
+        enginAffecteOld.sync(enginAffecte);
+        if(enginAffecte.getConducteur() != null && enginAffecte.getResponsableAffectation()!=null){
+
+            enginAffecte.getResponsableAffectation().setType(TypeUser.responsable);
+            enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getEntite());
+            enginAffecte.getConducteur().setType(TypeUser.conducteur);
+            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
+            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
+            enginAffecteOld.setResponsableAffectation(responsable);
+            enginAffecteOld.setConducteur(conducteur);
+        }
+        if (enginAffecteOld.getControleEngin().get(0).getEtatEntree() != 0){
+            enginAffecteOld.setEtat(EtatAffectation.execute);
+            enginAffecteOld.getEngin().setEtat(EtatEngin.disponible);
+            enginAffecteOld.setDateEntree(new Date());
+        }
+        else{
+            enginAffecteOld.setEtat(EtatAffectation.enexecution);
+            enginAffecteOld.setDateSortie(new Date());
+        }
+        enginAffecteService.saveEnginDemande(enginAffecteOld);
+        controleService.saveAll(enginAffecteOld.getControleEngin());
+        enginService.update(enginAffecteOld.getEngin());
+        return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
+    ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
+        Engin engin = enginService.getById(idEngin);
+        return new ResponseEntity<>(new DemandeCompletDTO(engin.getCurrenteAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getCurrenteAffectation()))) , HttpStatus.OK);
+    }
+
+
+    /*
 
     @PostMapping(value="/affecter")
     ResponseEntity<?> affecterEngins(@RequestBody List<EnginAffecte> enginAffecteList) {
@@ -183,44 +280,6 @@ public class DemandeController {
 
         return new ResponseEntity<>("Done" , HttpStatus.OK);
     }
-    @Autowired
-    UserRepository userRepository;
-
-    @PostMapping(value="/submit")
-    ResponseEntity<?> submitDemandeSortie(@RequestBody EnginAffecte enginAffecte){
-        EnginAffecte enginAffecteOld = enginAffecteService.getById(enginAffecte.getIdDemandeEngin());
-        enginAffecteOld.sync(enginAffecte);
-        if(enginAffecte.getConducteur() != null && enginAffecte.getResponsableAffectation()!=null){
-            enginAffecte.getResponsableAffectation().setType("Responsable");
-            enginAffecte.getResponsableAffectation().setEnable('N');
-            enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getPost().getEntite());
-            enginAffecte.getConducteur().setEnable('N');
-            enginAffecte.getConducteur().setType("Conducteur");
-            Utilisateur conducteur = userService.saveUserIfNotExist(enginAffecte.getConducteur());
-            Utilisateur responsable = userService.saveUserIfNotExist(enginAffecte.getResponsableAffectation());
-            enginAffecteOld.setResponsableAffectation(responsable);
-            enginAffecteOld.setConducteur(conducteur);
-        }
-        if (enginAffecteOld.getControleEngin().get(0).getEtatEntree() != 0){
-            enginAffecteOld.setEtat(EtatAffectation.execute);
-            enginAffecteOld.getEngin().setEtat(EtatEngin.disponible);
-            enginAffecteOld.setDateEntree(new Date());
-        }
-        else{
-            enginAffecteOld.setEtat(EtatAffectation.enexecution);
-            enginAffecteOld.setDateSortie(new Date());
-        }
-        enginAffecteService.saveEnginDemande(enginAffecteOld);
-        controleService.saveAll(enginAffecteOld.getControleEngin());
-        enginService.update(enginAffecteOld.getEngin());
-        return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
-    }
-
-
-    @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
-    ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
-        Engin engin = enginService.getById(idEngin);
-        return new ResponseEntity<>(new DemandeCompletDTO(engin.getCurrenteAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getCurrenteAffectation()))) , HttpStatus.OK);
-    }
+     */
 
 }

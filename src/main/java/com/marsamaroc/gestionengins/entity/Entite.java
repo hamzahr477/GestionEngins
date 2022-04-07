@@ -12,15 +12,15 @@ public class Entite implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-
     private String entite;
-
-    @OneToMany(mappedBy="entite",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable( name = "T_Post_Entite_Associations",
+            joinColumns = @JoinColumn( name = "id_entite" ),
+            inverseJoinColumns = @JoinColumn( name = "id_posts" ) )
     List<Post> posts;
-
     @OneToMany(mappedBy="entite")
     List<Utilisateur> utilisateurList;
-
-
+    @OneToMany(mappedBy="entite")
+    List<Demande> demandeList;
 
 }

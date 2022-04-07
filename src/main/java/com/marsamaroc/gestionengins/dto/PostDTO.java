@@ -11,9 +11,7 @@ import javax.persistence.ManyToOne;
 @Data
 public class PostDTO {
     Long codePost;
-    EntiteDTO entite;
     public PostDTO(Post post){
         this.codePost = post.getCodePost();
-        this.entite = new EntiteDTO(post.getEntite());
     }
 }

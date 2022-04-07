@@ -2,6 +2,7 @@ package com.marsamaroc.gestionengins.dto;
 
 import com.marsamaroc.gestionengins.entity.Utilisateur;
 
+import com.marsamaroc.gestionengins.enums.TypeUser;
 import lombok.Data;
 
 @Data
@@ -14,7 +15,7 @@ public class UserDTO {
 	     String email;
 	     String password;
 	     char enable;
-	     String type;
+	     TypeUser type;
 	    
 //-----
     

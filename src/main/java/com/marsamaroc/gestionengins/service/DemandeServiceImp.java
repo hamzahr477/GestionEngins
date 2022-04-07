@@ -7,8 +7,8 @@ import com.marsamaroc.gestionengins.repository.EnginAffecteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DemandeServiceImp implements DemandeService {
@@ -31,6 +31,7 @@ public class DemandeServiceImp implements DemandeService {
         return demande;
     }
 
+
     @Override
     public Demande saveDamande(Demande demande) {
         return demandeRepository.save(demande);
@@ -39,6 +40,11 @@ public class DemandeServiceImp implements DemandeService {
     @Override
     public Demande getById(Long id) {
         return demandeRepository.getById(id);
+    }
+
+    @Override
+    public Optional<Demande> findById(Long id) {
+        return demandeRepository.findById(id);
     }
 
     @Override

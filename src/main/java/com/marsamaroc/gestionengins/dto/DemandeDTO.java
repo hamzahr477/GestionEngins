@@ -26,7 +26,7 @@ public class DemandeDTO {
         this.dateSortie = demande.getDateSortie();
         this.shift = demande.getShift();
         this.poste = demande.getPost().getCodePost();
-        this.entite = demande.getPost().getEntite() == null ? null : demande.getPost().getEntite().getEntite();
+        this.entite = demande.getEntite() == null ? null : demande.getEntite().getEntite();
         this.totalEngins = demande.getQuantite();
         this.statut = demande.getStatut();
     }

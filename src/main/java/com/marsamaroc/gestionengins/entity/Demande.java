@@ -16,18 +16,20 @@ public class  Demande implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     Long numBCI;
-    Date dateDemande ;
+    Date dateDemande  = new Date();
     Date dateSortie;
     int shift;
     @ManyToOne
     @JoinColumn(name = "id_post")
     Post post;
+    @ManyToOne
+    @JoinColumn(name = "id_entite")
+    Entite entite;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "demande_numbci")
     List<DetailsDemande> detailsDemandeList;
     @OneToMany(mappedBy = "demande")
     List<EnginAffecte> enginsAffecteList = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "demande_responsable")
     private Utilisateur utilisateur;
@@ -86,5 +88,20 @@ public class  Demande implements Serializable {
                 if(enginAffecte.getEtat() == EtatAffectation.reserve)
                     nombre++;
         return nombre;
+    }
+    public int getQuantiteByFamille(Long idFamille){
+        if(detailsDemandeList != null)
+            for(DetailsDemande detailsDemande : detailsDemandeList)
+                if(detailsDemande.getFamille().getIdFamille() == idFamille)
+                    return detailsDemande.getQuantite();
+        return 0;
+    }
+    public int getNbrAffectByFamille(Long idFamille){
+        int q=0;
+        if(enginsAffecteList != null)
+            for(EnginAffecte enginAffecte : enginsAffecteList)
+                if(enginAffecte.getEngin().getFamille().getIdFamille() == idFamille)
+                    q++;
+        return q;
     }
 }

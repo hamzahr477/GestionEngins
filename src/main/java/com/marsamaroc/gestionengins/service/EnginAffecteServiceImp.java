@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -33,6 +34,11 @@ public class EnginAffecteServiceImp implements EnginAffecteService {
     @Override
     public EnginAffecte getById(Long id) {
         return enginAffecteRepository.getById(id);
+    }
+
+    @Override
+    public Optional<EnginAffecte> findById(Long id) {
+        return enginAffecteRepository.findById(id);
     }
 
     @Override

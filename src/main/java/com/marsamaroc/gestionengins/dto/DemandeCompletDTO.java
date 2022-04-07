@@ -25,7 +25,7 @@ public class DemandeCompletDTO {
         this.dateSortie = demande.getDateSortie();
         this.shift = demande.getShift();
         this.poste = demande.getPost().getCodePost();
-        this.entite = demande.getPost().getEntite().getEntite();
+        this.entite = demande.getEntite().getEntite();
         this.statut = demande.getStatut();
         for(DetailsDemande detailsDemande : demande.getDetailsDemandeList())
             this.familleDemandee.add(new FamilleDemandeDTO(detailsDemande));
