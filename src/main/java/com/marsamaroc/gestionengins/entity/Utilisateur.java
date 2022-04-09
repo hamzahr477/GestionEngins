@@ -47,7 +47,7 @@ public class Utilisateur implements Serializable {
         if(enginAffecteList_conducteur!=null){
             Collections.sort(this.enginAffecteList_conducteur, (o1, o2) -> o1.getDateSortie().compareTo(o2.getDateSortie()) <= 0 ?  1 : -1);
             if(!enginAffecteList_conducteur.isEmpty())
-                return DateUtils.addHours(enginAffecteList_conducteur.get(0).getDateSortie(), 8*enginAffecteList_conducteur.get(0).getDemande().getShift()).compareTo(new Date()) <= 0 || enginAffecteList_conducteur.get(0).getDateEntree()!=null;
+                return DateUtils.addHours(enginAffecteList_conducteur.get(0).getDateSortie(), enginAffecteList_conducteur.get(0).getDemande().getShift().getHeureFin().getHour()).compareTo(new Date()) <= 0 || enginAffecteList_conducteur.get(0).getDateEntree()!=null;
         }
         return true;
     }

@@ -18,7 +18,9 @@ public class  Demande implements Serializable {
     Long numBCI;
     Date dateDemande  = new Date();
     Date dateSortie;
-    int shift;
+    @ManyToOne
+    @JoinColumn(name = "id_shift")
+    Shift shift;
     @ManyToOne
     @JoinColumn(name = "id_post")
     Post post;

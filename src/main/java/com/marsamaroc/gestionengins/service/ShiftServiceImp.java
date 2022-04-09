@@ -1,0 +1,49 @@
+package com.marsamaroc.gestionengins.service;
+
+import com.marsamaroc.gestionengins.entity.Shift;
+import com.marsamaroc.gestionengins.exception.ResourceNotFoundException;
+import com.marsamaroc.gestionengins.repository.ShiftRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+@Service
+public class ShiftServiceImp implements ShiftService {
+
+    @Autowired
+    ShiftRepository shiftRepository;
+    @Override
+    public Shift save(Shift shift) {
+        return shiftRepository.save(shift);
+    }
+
+    @Override
+    public Shift update(Shift shift) throws ResourceNotFoundException {
+        shiftRepository.findById(shift.getId()).orElseThrow(()->new ResourceNotFoundException("Shift not found for this id :: "+shift.getId()));
+        return  shiftRepository.save(shift);
+    }
+
+    @Override
+    public List<Shift> findAll() {
+        return shiftRepository.findAll();
+    }
+
+    @Override
+    public Shift getById(Long id) throws ResourceNotFoundException {
+        return shiftRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Shift not found for this id :: "+id));
+
+    }
+
+    @Override
+    public Shift getByCodeShift(String codeShift) throws ResourceNotFoundException {
+        return shiftRepository.findAllByCodeShift(codeShift).orElseThrow(()->new ResourceNotFoundException("Shift not found for this code :: "+codeShift));
+
+    }
+
+    @Override
+    public Shift saveIfNotExist(Shift shift) {
+        if(shiftRepository.findAllByCodeShift(shift.getCodeShift()).orElse(null) == null)
+            shift = shiftRepository.save(shift);
+        return shift;
+    }
+}

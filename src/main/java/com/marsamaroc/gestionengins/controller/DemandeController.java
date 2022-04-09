@@ -102,7 +102,7 @@ public class DemandeController {
     }
 
     @PostMapping(value="/reserver")
-    ResponseEntity<?> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) throws ResourceNotFoundException {
+    ResponseEntity<?> reserveEnins(@RequestBody List<EnginAffecte> enginAffecteList) throws ResourceNotFoundException, EnginNotDisponibleException {
         List<EnginAffecteeDTO>  enginAffecteeDTOList = new ArrayList<>();
         for ( EnginAffecte enginAffecte :  enginAffecteList){
             Engin engin_ = enginService.findById(enginAffecte.getEngin().getCodeEngin()).orElseThrow(
@@ -125,7 +125,7 @@ public class DemandeController {
                         enginAffOld = enginAffecte;
                         enginAffecteeDTOList.add(new EnginAffecteeDTO(enginAffOld));
                     }
-                }else return new ResponseEntity<>(new EnginNotDisponibleException("Engin with id ::"+enginAffecte.getEngin().getCodeEngin()+" not disponible"), HttpStatus.EXPECTATION_FAILED);
+                }else throw  new EnginNotDisponibleException("Engin with id ::"+enginAffecte.getEngin().getCodeEngin()+" not disponible");
             }
         }
 
@@ -145,20 +145,22 @@ public class DemandeController {
     }
 
     @PostMapping(value="delete/{numBCI}")
-    ResponseEntity<?> deletDemande(@PathVariable("numBCI") Long numBCI){
+    ResponseEntity<?> deletDemande(@PathVariable("numBCI") Long numBCI) throws AffectDemandDeleteException {
         Demande demande = demandeService.getById(numBCI);
         if(demande.getEnginsAffecteList().isEmpty()){
             demandeService.deletDemande(demande);
             return new ResponseEntity<>("deleted" , HttpStatus.OK);
         }
-        return new ResponseEntity<>(new AffectDemandDeleteException("Demande Not enable to remove") , HttpStatus.EXPECTATION_FAILED);
+        throw new AffectDemandDeleteException("Demande Not enable to remove");
     }
 
     @PostMapping(value="/sortie")
-    ResponseEntity<?> sortieEngin(@RequestBody EnginAffecte enginAffecte) throws ResourceNotFoundException {
+    ResponseEntity<?> sortieEngin(@RequestBody EnginAffecte enginAffecte) throws ResourceNotFoundException, EnginSortieException, ConducteurNotDisponibleException, NullParamException {
         EnginAffecte enginAffecteOld = enginAffecteService.findById(enginAffecte.getIdDemandeEngin()).orElseThrow(
                 ()->new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecte.getIdDemandeEngin())
         );
+        if(enginAffecteOld.getEtat()==EtatAffectation.enexecution)
+            throw new EnginSortieException("Engin alrady exit");
         if(enginAffecte.getConducteur() != null && enginAffecte.getResponsableAffectation()!=null) {
             enginAffecte.getResponsableAffectation().setType(TypeUser.responsable);
             enginAffecte.getConducteur().setEntite(enginAffecteOld.getDemande().getEntite());
@@ -174,9 +176,9 @@ public class DemandeController {
                 enginService.update(enginAffecteOld.getEngin());
                 return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
             }
-            return new ResponseEntity<>(new ConducteurNotDisponibleException("Condicteur whit matricule :: "+conducteur.getMatricule()+" not disponible"), HttpStatus.EXPECTATION_FAILED);
+            throw new ConducteurNotDisponibleException("Condicteur whit matricule :: "+conducteur.getMatricule()+" not disponible");
         }
-        return new ResponseEntity<>(new NullParamException("Condicteur or Responsable Param is null"), HttpStatus.EXPECTATION_FAILED);
+        throw new NullParamException("Condicteur or Responsable Param is null");
         }
     @PostMapping(value="/entree")
     ResponseEntity<?> entreeEngin(@RequestBody EnginAffecte enginAffecte) throws ResourceNotFoundException {

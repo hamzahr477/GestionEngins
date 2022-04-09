@@ -12,7 +12,7 @@ public class DemandeCompletDTO {
     private Long numBCI;
     private Date dateDemande;
     private Date dateSortie;
-    private int shift;
+    private Shift shift;
     private Long poste;
     private String entite;
     private String statut;

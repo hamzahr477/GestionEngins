@@ -16,22 +16,27 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(ConducteurNotDisponibleException.class)
     public ResponseEntity<?> conducteurNotDisponibleException(ConducteurNotDisponibleException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails("CND",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.NOT_FOUND.toString());
+        ErrorDetails errorDetails = new ErrorDetails("CND",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
     @ExceptionHandler(EnginNotDisponibleException.class)
     public ResponseEntity<?> enginNotDisponibleException(EnginNotDisponibleException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails("END",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.NOT_FOUND.toString());
+        ErrorDetails errorDetails = new ErrorDetails("END",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
     @ExceptionHandler(NullParamException.class)
     public ResponseEntity<?> nullParamException(NullParamException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails("NP",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.NOT_FOUND.toString());
+        ErrorDetails errorDetails = new ErrorDetails("NP",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.BAD_REQUEST.toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
     @ExceptionHandler(AffectDemandDeleteException.class)
     public ResponseEntity<?> affectDemandeException(AffectDemandDeleteException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails("ADD",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.NOT_FOUND.toString());
+        ErrorDetails errorDetails = new ErrorDetails("ADD",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
+        return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
+    }
+    @ExceptionHandler(EnginSortieException.class)
+    public ResponseEntity<?> enginSortieException(EnginSortieException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails("ES",new Date(), ex.getMessage(), request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
 

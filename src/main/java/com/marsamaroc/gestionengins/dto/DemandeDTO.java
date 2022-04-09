@@ -3,6 +3,7 @@ package com.marsamaroc.gestionengins.dto;
 import com.marsamaroc.gestionengins.entity.Demande;
 import com.marsamaroc.gestionengins.entity.Entite;
 import com.marsamaroc.gestionengins.entity.Post;
+import com.marsamaroc.gestionengins.entity.Shift;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ public class DemandeDTO {
     private Long numBCI;
     private Date dateDemande;
     private Date dateSortie;
-    private int shift;
+    private Shift shift;
     private Long poste;
     private String entite;
     private int totalEngins;
