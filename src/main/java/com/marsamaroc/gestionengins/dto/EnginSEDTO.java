@@ -19,7 +19,7 @@ public class EnginSEDTO {
     private Long compteur;
     private String famille;
     private Date dateDernierAffectation;
-    private EtatAffectation etat;
+    private EtatAffectation type;
     private Long numBCI;
     public EnginSEDTO(Engin engin){
         this.nomEngin = engin.getNomEngin();
@@ -29,7 +29,7 @@ public class EnginSEDTO {
         this.compteur = engin.getCompteur();
         this.famille = engin.getFamille().getNomFamille();
         this.dateDernierAffectation = engin.getDerniereAffectation() != null ? engin.getDerniereAffectation().getDateAffectation() : null;
-        this.etat = engin.getDerniereAffectation() != null ? engin.getDerniereAffectation().getEtat()  : null;
+        this.type = engin.getDerniereAffectation() != null ? engin.getDerniereAffectation().getEtat()  : null;
         this.numBCI = engin.getDerniereAffectation() != null ? engin.getDerniereAffectation().getDemande().getNumBCI() : null;
     }
 }

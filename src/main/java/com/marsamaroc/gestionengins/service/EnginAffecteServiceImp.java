@@ -3,12 +3,17 @@ package com.marsamaroc.gestionengins.service;
 import com.marsamaroc.gestionengins.entity.Demande;
 import com.marsamaroc.gestionengins.entity.Engin;
 import com.marsamaroc.gestionengins.entity.EnginAffecte;
+import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.repository.ControleRepository;
 import com.marsamaroc.gestionengins.repository.EnginAffecteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +28,7 @@ public class EnginAffecteServiceImp implements EnginAffecteService {
     public EnginAffecte saveEnginDemande(EnginAffecte enginAffecte) {
         EnginAffecte oldEnginAffect =  getByEnginAndDemande(enginAffecte.getEngin(),enginAffecte.getDemande());
         enginAffecte.setIdDemandeEngin(oldEnginAffect==null ? null : oldEnginAffect.getIdDemandeEngin());
+        enginAffecte.setDateModified(new Date());
         return enginAffecteRepository.save(enginAffecte);
     }
 
@@ -53,7 +59,8 @@ public class EnginAffecteServiceImp implements EnginAffecteService {
     }
 
     @Override
-    public List<EnginAffecte> getAll() {
-        return enginAffecteRepository.findAll();
+    public Page<EnginAffecte> getAll(String sortField, int offset, int pageSize, String sortType, String search, EtatAffectation type) {
+        System.out.println(type);
+        return enginAffecteRepository.search(type,search, PageRequest.of(offset,pageSize, Sort.by(Sort.Direction.fromString(sortType),sortField)));
     }
 }

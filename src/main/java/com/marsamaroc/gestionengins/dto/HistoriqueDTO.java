@@ -39,8 +39,8 @@ public class HistoriqueDTO{
         this.dateEntreeR  = enginAffecte.getDateEntree();
         this.dateSortieR = enginAffecte.getDateSortie();
         this.derniereAffectation = enginAffecte.getEngin().getDerniereAffectation().getDateAffectation();
-        this.conducteur = new UserDTO(enginAffecte.getConducteur());
-        this.responsable = new UserDTO(enginAffecte.getResponsableAffectation());
+        this.conducteur =enginAffecte.getConducteur()!=null? new UserDTO(enginAffecte.getConducteur()) :null;
+        this.responsable =enginAffecte.getResponsableAffectation()!=null? new UserDTO(enginAffecte.getResponsableAffectation()) :null;
         this.statut = enginAffecte.getEngin().getEtat()== EtatEngin.enpanne ? "enpanne" : "ok";
         this.panne =enginAffecte.getEngin().getDernierePanne()!= null?  new PanneDTO(enginAffecte.getEngin().getDernierePanne()):null ;
 
