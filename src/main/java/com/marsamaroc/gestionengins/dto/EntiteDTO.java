@@ -7,7 +7,8 @@ import lombok.Data;
 public class EntiteDTO {
     private Long id;
     private String entite;
-    public EntiteDTO(Entite entite){
+    public
+    EntiteDTO(Entite entite){
         this.id = entite.getId();
         this.entite = entite.getEntite();
     }

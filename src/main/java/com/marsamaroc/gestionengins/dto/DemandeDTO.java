@@ -17,7 +17,7 @@ public class DemandeDTO {
     private Date dateSortie;
     private Shift shift;
     private Long poste;
-    private String entite;
+    private EntiteDTO entite;
     private int totalEngins;
     private String statut;
 
@@ -27,21 +27,9 @@ public class DemandeDTO {
         this.dateSortie = demande.getDateSortie();
         this.shift = demande.getShift();
         this.poste = demande.getPost().getCodePost();
-        this.entite = demande.getEntite() == null ? null : demande.getEntite().getEntite();
+        this.entite = demande.getEntite() == null ? null : new EntiteDTO(demande.getEntite());
         this.totalEngins = demande.getQuantite();
         this.statut = demande.getStatut();
     }
-    private Demande toEntity(){
-        Entite entite = new Entite();
-        entite.setEntite(this.entite);
-        Post post =  new Post();
-        post.setCodePost(poste);
-        Demande demande = new Demande();
-        demande.setDateDemande(dateDemande);
-        demande.setNumBCI(numBCI);
-        demande.setPost(post);
-        demande.setShift(shift);
-        demande.setDateSortie(dateSortie);
-        return demande;
-    }
+
 }
