@@ -14,7 +14,7 @@ public class DemandeCompletDTO {
     private Date dateSortie;
     private Shift shift;
     private Long poste;
-    private String entite;
+    private EntiteDTO entite;
     private String statut;
     private List<FamilleDemandeDTO> familleDemandee = new ArrayList<>();
     private List<EnginDTO> engins;
@@ -25,27 +25,11 @@ public class DemandeCompletDTO {
         this.dateSortie = demande.getDateSortie();
         this.shift = demande.getShift();
         this.poste = demande.getPost().getCodePost();
-        this.entite = demande.getEntite().getEntite();
+        this.entite = demande.getEntite() == null ? null : new EntiteDTO(demande.getEntite());
         this.statut = demande.getStatut();
         for(DetailsDemande detailsDemande : demande.getDetailsDemandeList())
             this.familleDemandee.add(new FamilleDemandeDTO(detailsDemande));
         this.engins = enginDTOList;
     }
-    private Demande convertToEntity(){
-        Entite entite = new Entite();
-        entite.setEntite(this.entite);
-        Post post =  new Post();
-        post.setCodePost(poste);
-        Demande demande = new Demande();
-        demande.setDateDemande(dateDemande);
-        demande.setNumBCI(numBCI);
-        demande.setPost(post);
-        demande.setShift(shift);
-        demande.setDateSortie(dateSortie);
-        List<DetailsDemande> detailsDemandeList = new ArrayList<>();
-        for(FamilleDemandeDTO familleDemandeDTO : familleDemandee)
-            detailsDemandeList.add(familleDemandeDTO.convertToEntity(demande));
-        demande.setDetailsDemandeList(detailsDemandeList);
-        return demande;
-    }
+
 }
