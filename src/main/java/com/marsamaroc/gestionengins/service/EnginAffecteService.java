@@ -16,4 +16,6 @@ public interface EnginAffecteService {
 
     EnginAffecte getByEnginAndDemande(Engin engin, Demande demande);
     void delete(EnginAffecte enginAffecte);
+
+    List<EnginAffecte> getAll();
 }

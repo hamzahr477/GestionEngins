@@ -38,6 +38,8 @@ public class Engin implements Serializable {
 
     boolean deleted = false;
 
+    @OneToMany(mappedBy = "engin")
+    List<Panne> panneList ;
 
     public void sync(Engin engin){
         if(engin == null) return;
@@ -71,5 +73,14 @@ public class Engin implements Serializable {
                 dernierEnginAffecte = enginAffecteList.get(0);
         }
         return dernierEnginAffecte;
+    }
+    public Panne getDernierePanne(){
+        Panne panne = null;
+        if(this.panneList!=null){
+            Collections.sort(this.panneList, (o1, o2) -> o1.getDateCreationPanne().compareTo(o2.getDateCreationPanne()) < 0 ?  1 : -1);
+            if(!panneList.isEmpty())
+                panne = panneList.get(0);
+        }
+        return panne;
     }
 }

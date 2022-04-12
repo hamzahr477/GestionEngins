@@ -8,18 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PagneDTO {
+public class PanneDTO {
     private Long id;
     private EnginDTO engin;
     private EnginAffecteeDTO derniereAffectation;
     private DemandeDTO currentDemande;
     private List<DetailsPagneDTO> detailsPagneList = new ArrayList<>();
 
-    public PagneDTO(Panne panne){
+    public PanneDTO(Panne panne){
         this.id = panne.getId();
-        this.derniereAffectation = new EnginAffecteeDTO(panne.getDernierAffectation()) ;
-        this.currentDemande = new DemandeDTO(panne.getCurrentDemande());
-        this.engin = new EnginDTO(panne.getEngin(), panne.getEngin().getDerniereAffectation());
+        this.derniereAffectation = panne != null? new EnginAffecteeDTO(panne.getDernierAffectation()) :null;
+        this.currentDemande =panne != null?  new DemandeDTO(panne.getCurrentDemande()):null;
         if(panne.getDetailsPanneList() != null)
             for(DetailsPanne detailsPanne : panne.getDetailsPanneList())
                 detailsPagneList.add(new DetailsPagneDTO(detailsPanne));

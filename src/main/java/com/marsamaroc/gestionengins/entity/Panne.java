@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -28,5 +29,7 @@ public class Panne implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "panne_id")
     private List<DetailsPanne> detailsPanneList;
+
+    Date dateCreationPanne = new Date();
 
 }

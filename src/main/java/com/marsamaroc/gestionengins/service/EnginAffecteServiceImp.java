@@ -51,4 +51,9 @@ public class EnginAffecteServiceImp implements EnginAffecteService {
         contoleRepository.deleteByEnginAffecteIdDemandeEngin(enginAffecte.getIdDemandeEngin());
         enginAffecteRepository.delete(enginAffecte);
     }
+
+    @Override
+    public List<EnginAffecte> getAll() {
+        return enginAffecteRepository.findAll();
+    }
 }
