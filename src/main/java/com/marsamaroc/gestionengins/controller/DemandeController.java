@@ -55,7 +55,6 @@ public class DemandeController {
         List<Demande> demandeList= demandeService.findAllDemande();
         List<DemandeDTO> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
-            if(demande.getDateDemande()==null) demande.setDateDemande(new Date());
             demandeDTOList.add(new DemandeDTO(demande));
         }
         return demandeDTOList;
@@ -98,6 +97,8 @@ public class DemandeController {
     @PostMapping(value="/add")
     ResponseEntity<?> addDemande(@RequestBody Demande demande) {
         Demande newDemande = demandeService.saveDamande(demande);
+        if(demande.getDateDemande()==null) demande.setDateDemande(new Date());
+
         return new ResponseEntity<>(new DemandeDTO(newDemande) , HttpStatus.OK);
     }
 
@@ -226,10 +227,11 @@ public class DemandeController {
     }
 
 
-    @RequestMapping(value="/engin/{idEngin}",method= RequestMethod.GET)
-    ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin){
-        Engin engin = enginService.getById(idEngin);
-        return new ResponseEntity<>(new DemandeCompletDTO(engin.getCurrenteAffectation().getDemande(), Arrays.asList(new EnginDTO(engin,engin.getCurrenteAffectation()))) , HttpStatus.OK);
+    @RequestMapping(value="/{numBCI}/{idEngin}",method= RequestMethod.GET)
+    ResponseEntity<?> ElisteEnginsEntree(@PathVariable(name = "idEngin") String idEngin,@PathVariable(name = "numBCI") Long numBCI) throws ResourceNotFoundException {
+        EnginAffecte enginAffecte = enginAffecteService.getByEnginAndDemande(enginService.getById(idEngin),demandeService.getById(numBCI));
+        if(enginAffecte == null) throw new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecte.getIdDemandeEngin());
+        return new ResponseEntity<>(new DemandeCompletDTO(enginAffecte.getDemande(), Arrays.asList(new EnginDTO(enginAffecte.getEngin(),enginAffecte))) , HttpStatus.OK);
     }
 
 

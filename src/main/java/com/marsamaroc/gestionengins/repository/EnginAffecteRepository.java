@@ -18,8 +18,8 @@ public interface EnginAffecteRepository extends JpaRepository<EnginAffecte,Long>
     List<EnginAffecte> findAllByEngin_CodeEngin(String codeEngin);
     EnginAffecte findByEnginCodeEnginAndDemandeNumBCI(String codeEngin , Long numBCI);
 
-    @Query(value = "select ea from EnginAffecte ea"+
-            " where (" +
+    @Query(value = "select ea from EnginAffecte ea" +
+            " where ( " +
             " :#{#search} is null " +
             "or  ea.engin.codeEngin like %:#{#search}% " +
             "or ea.engin.nomEngin like %:#{#search}% " +
