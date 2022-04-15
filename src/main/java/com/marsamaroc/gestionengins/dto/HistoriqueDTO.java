@@ -89,13 +89,9 @@ public class HistoriqueDTO{
         this.statut="OK";
 
         if(enginAffecte.getEngin().getPanneList() != null)
-
             for(Panne panne :enginAffecte.getEngin().getPanneList() )
-
                 if(panne.getCurrentDemande().getNumBCI() == enginAffecte.getDemande().getNumBCI()) {
-
                     this.statut="enpanne";
-
                     this.panne = new PanneDTO(panne);
 
                 }

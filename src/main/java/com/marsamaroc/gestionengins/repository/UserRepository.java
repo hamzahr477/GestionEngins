@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<Utilisateur, Long> {
             "LEFT JOIN shift s ON s.id=dm.id_shift\n" +
             "WHERE  ( ea.date_sortie = (select max(ea_.date_sortie) from engin_affecte ea_ GROUP by ea_.conducteur HAVING ea_.conducteur = ea.conducteur)\n" +
             "and\n" +
-            "(ea.date_entree is not null or CAST( ea.date_sortie AS DATE) +  s.heure_fin  < CURRENT_TIMESTAMP ))\n" +
+            "(ea.date_entree is not null or TIMESTAMP(CAST( ea.date_sortie AS DATE), s.heure_fin)  < CURRENT_TIMESTAMP ))\n" +
             "or(ea.id_demande_engin is null)\n" +
             ";", nativeQuery = true)
     Optional<List<Utilisateur>> getAllDispConducteur();

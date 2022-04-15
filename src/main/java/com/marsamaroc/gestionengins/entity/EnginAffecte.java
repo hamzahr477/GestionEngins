@@ -54,4 +54,5 @@ public class EnginAffecte implements Serializable {
         this.dateAffectation = enginAffecte.dateAffectation != null ? enginAffecte.getDateAffectation() : this.dateAffectation;
 
     }
+
 }

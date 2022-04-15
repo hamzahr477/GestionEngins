@@ -96,8 +96,9 @@ public class DemandeController {
 
     @PostMapping(value="/add")
     ResponseEntity<?> addDemande(@RequestBody Demande demande) {
-        Demande newDemande = demandeService.saveDamande(demande);
         if(demande.getDateDemande()==null) demande.setDateDemande(new Date());
+
+        Demande newDemande = demandeService.saveDamande(demande);
 
         return new ResponseEntity<>(new DemandeDTO(newDemande) , HttpStatus.OK);
     }

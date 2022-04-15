@@ -32,4 +32,8 @@ public class Panne implements Serializable {
 
     Date dateCreationPanne = new Date();
 
+    public Panne filtreCriterPanne(List<Long> idCriters){
+        this.detailsPanneList.removeIf(detailsPanne -> !idCriters.contains(detailsPanne.getCritere().getIdCritere()));
+        return this;
+    }
 }

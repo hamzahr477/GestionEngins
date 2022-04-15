@@ -13,9 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -59,8 +61,27 @@ public class EnginAffecteServiceImp implements EnginAffecteService {
     }
 
     @Override
-    public Page<EnginAffecte> getAll(String sortField, int offset, int pageSize, String sortType, String search, EtatAffectation type) {
-        System.out.println(type);
-        return enginAffecteRepository.search(type,search, PageRequest.of(offset,pageSize, Sort.by(Sort.Direction.fromString(sortType),sortField)));
+    public Page<EnginAffecte> getAll(String sortField,
+                                     int offset,
+                                     int pageSize,
+                                     String familles,
+                                     String conducteurs,
+                                     String responsables,
+                                     Date dateMaxAffectation,
+                                     Date dateMinAffectation,
+                                     Date dateMaxEntree,
+                                     Date dateMinEntree,
+                                     Date dateMaxSortie,
+                                     String sortType,
+                                     Long numBCI,
+                                     String codeEngins,
+                                     Date dateMinSortie,
+                                     EtatAffectation type){
+        List<Long> familles_ = familles == null? null : Arrays.stream(familles.split(",")).map(f->Long.parseLong(f)).collect(Collectors.toList());
+        List<String> conducteurs_ = conducteurs == null? null: Arrays.asList(conducteurs.split(","));
+        List<String> responsables_ = responsables == null? null: Arrays.asList(responsables.split(","));
+        List<String> codeEngins_ = codeEngins == null? null: Arrays.asList(codeEngins.split(","));
+        System.out.println(type+":"+":"+familles+":"+codeEngins+":"+numBCI+":"+conducteurs+":"+responsables+":"+dateMinSortie+":"+dateMaxAffectation+":"+dateMinAffectation+":"+dateMaxEntree+":"+dateMinEntree+":"+dateMaxSortie);
+        return enginAffecteRepository.search(type,familles_,codeEngins_,numBCI,conducteurs_,responsables_,dateMinSortie,dateMaxAffectation,dateMinAffectation,dateMaxEntree,dateMinEntree,dateMaxSortie, PageRequest.of(offset,pageSize, Sort.by(Sort.Direction.fromString(sortType),sortField)));
     }
 }
