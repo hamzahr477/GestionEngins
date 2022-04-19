@@ -45,5 +45,10 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails("IA",new Date(), "Illegal Argument exception", request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
+    @ExceptionHandler(DemandeClotureException.class)
+    public ResponseEntity<?> demandeClotureException(DemandeClotureException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails("DDP",new Date(), "Date of demande has been passed", request.getDescription(false),HttpStatus.EXPECTATION_FAILED.toString());
+        return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
+    }
 
 }

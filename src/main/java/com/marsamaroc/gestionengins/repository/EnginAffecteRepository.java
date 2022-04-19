@@ -26,8 +26,8 @@ public interface EnginAffecteRepository extends JpaRepository<EnginAffecte,Long>
             "and ( :type is null or ea.etat = :type) " +
             "and ( :numBCI is null or ea.demande.numBCI = :numBCI) " +
             "and ( :familles is null or ea.engin.famille.idFamille IN (:familles)) " +
-            "and ( :conducteurs is null or ea.conducteur.matricule IN (:conducteurs)) " +
-            "and ( :responsables is null or ea.responsableAffectation.matricule IN (:responsables)) " +
+            "and ( :conducteurs is null or ea.conducteur_sortie.matricule IN (:conducteurs)) " +
+            "and ( :responsables is null or ea.responsableAffectation_sortie.matricule IN (:responsables)) " +
             "and ( :dateMinSortie is null or ea.dateSortie >= :dateMinSortie) " +
             "and ( :dateMaxSortie is null or ea.dateSortie >= :dateMaxSortie) " +
             "and ( :dateMaxEntree is null or ea.dateEntree <= :dateMaxEntree) " +

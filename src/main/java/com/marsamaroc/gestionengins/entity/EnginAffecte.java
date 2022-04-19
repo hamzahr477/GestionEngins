@@ -31,14 +31,28 @@ public class EnginAffecte implements Serializable {
 
     Date dateModified = new Date() ;
     @ManyToOne
-    @JoinColumn(name = "affectation_responsable")
-    private Utilisateur responsableAffectation;
+    @JoinColumn(name = "affectation_responsable_entree")
+    private Utilisateur responsableAffectation_entree;
 
     @ManyToOne
-    @JoinColumn(name = "conducteur")
-    private Utilisateur conducteur;
+    @JoinColumn(name = "conducteur_entree")
+    private Utilisateur conducteur_entree;
+    @ManyToOne
+    @JoinColumn(name = "affectation_responsable_sortie")
+    private Utilisateur responsableAffectation_sortie;
 
+    @ManyToOne
+    @JoinColumn(name = "conducteur_sortie")
+    private Utilisateur conducteur_sortie;
 
+    Long compteur_entree;
+    Long compteur_sortie;
+    @ManyToOne
+    @JoinColumn(name = "id_shift_entree")
+    Shift shift_entree;
+    @ManyToOne
+    @JoinColumn(name = "id_shift_sortie")
+    Shift shift_sortie;
 
     public void sync(EnginAffecte enginAffecte){
         this.idDemandeEngin = enginAffecte.idDemandeEngin != null ? enginAffecte.getIdDemandeEngin() : this.idDemandeEngin;
@@ -52,7 +66,11 @@ public class EnginAffecte implements Serializable {
         this.dateEntree = enginAffecte.dateEntree != null ? enginAffecte.getDateEntree() : this.dateEntree;
         this.dateSortie = enginAffecte.dateSortie != null ? enginAffecte.getDateSortie() : this.dateSortie;
         this.dateAffectation = enginAffecte.dateAffectation != null ? enginAffecte.getDateAffectation() : this.dateAffectation;
-
+        this.responsableAffectation_entree = enginAffecte.responsableAffectation_entree != null ? enginAffecte.getResponsableAffectation_entree() : this.responsableAffectation_entree;
+        this.responsableAffectation_sortie = enginAffecte.responsableAffectation_sortie != null ? enginAffecte.getResponsableAffectation_sortie() : this.responsableAffectation_sortie;
+        this.conducteur_entree = enginAffecte.conducteur_entree != null ? enginAffecte.getConducteur_entree() : this.conducteur_entree;
+        this.conducteur_entree = enginAffecte.conducteur_sortie != null ? enginAffecte.getConducteur_sortie() : this.conducteur_sortie;
+        this.compteur_entree = enginAffecte.compteur_entree != null ? enginAffecte.getCompteur_entree() : this.compteur_entree;
     }
 
 }

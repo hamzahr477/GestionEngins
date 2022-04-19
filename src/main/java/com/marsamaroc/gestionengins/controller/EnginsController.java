@@ -6,6 +6,8 @@ import com.marsamaroc.gestionengins.dto.PostDTO;
 import com.marsamaroc.gestionengins.entity.Engin;
 import com.marsamaroc.gestionengins.entity.Famille;
 import com.marsamaroc.gestionengins.entity.Post;
+import com.marsamaroc.gestionengins.enums.EtatAffectation;
+import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.service.ControleService;
 import com.marsamaroc.gestionengins.service.EnginService;
 import com.marsamaroc.gestionengins.service.FamilleService;
@@ -14,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,8 +92,14 @@ public class EnginsController {
     ResponseEntity<?> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille){
         List<Engin> enginList = enginService.getEnginsEntreesByFamille(famille);
         List<EnginDTO> enginDTOList =new ArrayList<>();
-        for (Engin engin : enginList)
-        	enginDTOList.add(new EnginDTO(engin,null));
+        for (Engin engin : enginList) {
+            if(!engin.getEnginAffecteList().isEmpty())
+            if(engin.getDerniereAffectation().getEtat()== EtatAffectation.enexecution ||(
+                    engin.getDerniereAffectation().getEtat()== EtatAffectation.reserve &&
+                            LocalDateTime.of(engin.getDerniereAffectation().getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), engin.getDerniereAffectation().getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) >  1) )
+                continue;
+            enginDTOList.add(new EnginDTO(engin, null));
+        }
         return new ResponseEntity<>(enginDTOList, HttpStatus.OK);
 
     }

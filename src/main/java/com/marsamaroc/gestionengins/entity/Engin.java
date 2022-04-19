@@ -28,7 +28,7 @@ public class Engin implements Serializable {
     private Famille famille;
 
     @Enumerated(EnumType.STRING)
-    private EtatEngin etat = EtatEngin.disponible;
+    private EtatEngin etat = EtatEngin.parcking;
 
     @Enumerated(EnumType.STRING)
     private DisponibiliteEnginParck disponibiliteParck = DisponibiliteEnginParck.indisponible;

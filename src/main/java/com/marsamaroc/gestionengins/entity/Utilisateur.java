@@ -36,13 +36,7 @@ public class Utilisateur implements Serializable {
     @OneToMany(mappedBy= "utilisateur")
     private List<Demande> demandeList;
 
-    @OneToMany(mappedBy = "responsableAffectation")
-    private List<EnginAffecte> enginAffecteList;
-
-    @OneToMany(mappedBy = "conducteur")
-    private List<EnginAffecte> enginAffecteList_conducteur;
-
-
+    /*
     public boolean isDisponible(){
         if(enginAffecteList_conducteur!=null){
             Collections.sort(this.enginAffecteList_conducteur, (o1, o2) -> o1.getDateSortie().compareTo(o2.getDateSortie()) <= 0 ?  1 : -1);
@@ -51,6 +45,8 @@ public class Utilisateur implements Serializable {
         }
         return true;
     }
+     */
+
 
 
 }

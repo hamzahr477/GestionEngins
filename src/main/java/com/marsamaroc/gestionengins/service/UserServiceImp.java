@@ -41,7 +41,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public List<Utilisateur> getCondicteursDispo() {
-        return userRepository.getAllDispConducteur().orElse(null);
+        return userRepository.findAllByType(TypeUser.conducteur).orElse(null);
     }
 
     @Override

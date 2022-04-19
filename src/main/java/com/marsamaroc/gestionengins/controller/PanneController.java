@@ -25,8 +25,6 @@ public class PanneController {
     @PostMapping(value = "/addPagne")
     PanneDTO addPAgne(@RequestBody Panne panne){
         Engin engin = enginService.getById(panne.getEngin().getCodeEngin());
-        engin.setEtat(EtatEngin.enpanne);
-        enginService.update(engin);
         panne.setCurrentDemande(demandeService.getById(panne.getCurrentDemande().getNumBCI()));
         panne.setDernierAffectation(enginService.getById(panne.getEngin().getCodeEngin()).getDerniereAffectation());
         panne.setEngin(engin);

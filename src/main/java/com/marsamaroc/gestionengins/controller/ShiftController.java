@@ -27,12 +27,8 @@ public class ShiftController {
         List<Shift> shiftList = shiftService.findAll();
         if(shiftList.isEmpty())
             throw new ResourceNotFoundException("No Shift found");
-        Long idDefault = shiftList.get(0).getId();
-        for (Shift shift:shiftList) {
-            if(shift.getHeureDebut().compareTo(LocalTime.now())<0  && shift.getHeureFin().compareTo(LocalTime.now())>0)
-                idDefault = shift.getId();
-        }
-        return new ResponseEntity<>(new APIResponseShift<List<Shift>>(shiftList,idDefault), HttpStatus.OK);
+
+        return new ResponseEntity<>(new APIResponseShift<List<Shift>>(shiftList,Shift.currrentShift(shiftList).getId()), HttpStatus.OK);
 
     }
 }

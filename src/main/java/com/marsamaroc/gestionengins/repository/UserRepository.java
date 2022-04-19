@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<Utilisateur, Long> {
     Utilisateur findByMatricule(String matricule);
     Optional<List<Utilisateur>> findAllByType(TypeUser type);
 
-
+    /*
     @Query(value="SELECT DISTINCT u.* from utilisateur u \n" +
             "LEFT JOIN engin_affecte ea ON u.id = ea.conducteur\n" +
             "LEFT JOIN demande dm ON ea.id_demande=dm.numbci\n" +
@@ -28,4 +28,5 @@ public interface UserRepository extends JpaRepository<Utilisateur, Long> {
             "or(ea.id_demande_engin is null)\n" +
             ";", nativeQuery = true)
     Optional<List<Utilisateur>> getAllDispConducteur();
+     */
 }

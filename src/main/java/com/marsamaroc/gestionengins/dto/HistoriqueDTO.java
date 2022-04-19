@@ -82,9 +82,9 @@ public class HistoriqueDTO{
 
         this.derniereAffectation = enginAffecte.getEngin().getDerniereAffectation().getDateAffectation();
 
-        this.conducteur =enginAffecte.getConducteur()!=null? new UserDTO(enginAffecte.getConducteur()) :null;
+        this.conducteur =enginAffecte.getConducteur_sortie()!=null? new UserDTO(enginAffecte.getConducteur_sortie()) :null;
 
-        this.responsable =enginAffecte.getResponsableAffectation()!=null? new UserDTO(enginAffecte.getResponsableAffectation()) :null;
+        this.responsable =enginAffecte.getResponsableAffectation_sortie()!=null? new UserDTO(enginAffecte.getResponsableAffectation_sortie()) :null;
 
         this.statut="OK";
 
