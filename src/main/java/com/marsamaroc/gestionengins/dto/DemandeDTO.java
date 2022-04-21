@@ -16,7 +16,7 @@ public class DemandeDTO {
     private Date dateDemande;
     private Date dateSortie;
     private Shift shift;
-    private Long poste;
+    private String poste;
     private EntiteDTO entite;
     private int totalEngins;
     private String statut;

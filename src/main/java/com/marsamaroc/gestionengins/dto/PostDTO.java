@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 @Data
 public class PostDTO {
-    Long codePost;
+    String codePost;
     public PostDTO(Post post){
         this.codePost = post.getCodePost();
     }

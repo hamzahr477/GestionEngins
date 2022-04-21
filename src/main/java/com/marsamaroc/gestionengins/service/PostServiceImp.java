@@ -14,7 +14,7 @@ public class PostServiceImp implements PostService {
     PostRepository postRepository;
 
     @Override
-    public Post getById(Long id) {
+    public Post getById(String id) {
         return postRepository.getPostByCodePost(id);
     }
 

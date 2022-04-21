@@ -32,7 +32,7 @@ public class HistoriqueDTO{
 
     private Shift shift;
 
-    private Long poste;
+    private String poste;
 
     private EntiteDTO entite;
 

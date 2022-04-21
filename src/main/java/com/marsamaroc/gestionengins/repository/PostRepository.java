@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RepositoryRestResource(path = "posts")
-public interface PostRepository extends JpaRepository<Post,Long> {
-    Post getPostByCodePost(Long codePost);
+public interface PostRepository extends JpaRepository<Post,String> {
+    Post getPostByCodePost(String codePost);
 }

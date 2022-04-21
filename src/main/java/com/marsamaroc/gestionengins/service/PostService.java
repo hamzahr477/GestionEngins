@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface PostService {
-    Post getById(Long id);
+    Post getById(String id);
     PostDTO savOrUpdate(Post post);
 
     List<Post> findAll();

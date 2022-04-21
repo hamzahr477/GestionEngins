@@ -5,6 +5,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,6 +101,7 @@ public class  Demande implements Serializable {
                     return detailsDemande.getQuantite();
         return 0;
     }
+
     public int getNbrAffectByFamille(Long idFamille){
         int q=0;
         if(enginsAffecteList != null)
@@ -105,5 +109,9 @@ public class  Demande implements Serializable {
                 if(enginAffecte.getEngin().getFamille().getIdFamille() == idFamille)
                     q++;
         return q;
+    }
+
+    public boolean isValableToTrait(){
+        return (LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) > 1);
     }
 }

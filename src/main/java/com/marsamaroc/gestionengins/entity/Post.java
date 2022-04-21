@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class Post implements Serializable {
     @Id
-    Long codePost;
+    String codePost;
     @ManyToMany
     @JoinTable( name = "T_Post_Entite_Associations",
             joinColumns = @JoinColumn( name = "id_posts" ),

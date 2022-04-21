@@ -8,6 +8,7 @@ import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.enums.TypeUser;
 import com.marsamaroc.gestionengins.exception.*;
 import com.marsamaroc.gestionengins.repository.UserRepository;
+import com.marsamaroc.gestionengins.response.APIResponseDemandeState;
 import com.marsamaroc.gestionengins.service.*;
 import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +54,17 @@ public class DemandeController {
     UserRepository userRepository;
 
     @RequestMapping(value="/all",method= RequestMethod.GET)
-    List<DemandeDTO> getAllDemande(){
+    ResponseEntity<?> getAllDemande() throws ResourceNotFoundException {
         List<Demande> demandeList= demandeService.findAllDemande();
-        List<DemandeDTO> demandeDTOList = new ArrayList<>();
+        if(demandeList.isEmpty())
+            throw new ResourceNotFoundException("Demandes Not Found");
+        List<APIResponseDemandeState<DemandeDTO>> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
-            demandeDTOList.add(new DemandeDTO(demande));
+            if(demande.isValableToTrait())
+                demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),true));
+            else demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),false));
         }
-        return demandeDTOList;
+        return new ResponseEntity<>(demandeDTOList,HttpStatus.OK);
     }
 
     @RequestMapping(value="/enregistree",method= RequestMethod.GET)
@@ -162,13 +167,15 @@ public class DemandeController {
     }
 
     @PostMapping(value="/sortie")
-    ResponseEntity<?> sortieEngin(@RequestBody EnginAffecteeSEDTO enginAffecteeSEDTO) throws ResourceNotFoundException, EnginSortieException, ConducteurNotDisponibleException, NullParamException {
+    ResponseEntity<?> sortieEngin(@RequestBody EnginAffecteeSEDTO enginAffecteeSEDTO) throws ResourceNotFoundException, EnginSortieException, ConducteurNotDisponibleException, NullParamException, DemandeClotureException {
 
         EnginAffecte enginAffecteOld = enginAffecteService.findById(enginAffecteeSEDTO.getIdDemandeEngin()).orElseThrow(
                 ()->new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecteeSEDTO.getIdDemandeEngin())
         );
         if(enginAffecteOld.getEtat()==EtatAffectation.enexecution)
             throw new EnginSortieException("Engin alrady exit");
+        if (LocalDateTime.of(enginAffecteOld.getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), enginAffecteOld.getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) <     1)
+            throw new DemandeClotureException("Date demande has been passed for numBCI :: " + enginAffecteOld.getDemande().getNumBCI());
         EnginAffecte enginAffecte = new EnginAffecte();
         enginAffecte.setConducteur_sortie(enginAffecteeSEDTO.getConducteur());
         enginAffecte.setResponsableAffectation_sortie(enginAffecteeSEDTO.getResponsableAffectation());
@@ -215,6 +222,8 @@ public class DemandeController {
             enginAffecteOld.setCompteur_entree(enginAffecteeSEDTO.getCompteur());
             List<DetailsPanne> detailsPanneList = new ArrayList<>();
             for(Controle controle : enginAffecteOld.getControleEngin()){
+                controle.setId(controleService.getControlByIdCritereAndIdAffectation(controle.getCritere().getIdCritere(),enginAffecteOld.getIdDemandeEngin()).getId());
+                controleService.save(controle,enginAffecteOld);
                 if(controle.getEtatEntree()=='N'){
                     DetailsPanne detailsPanne = new DetailsPanne();
                     detailsPanne.setCritere(controle.getCritere());
@@ -236,7 +245,6 @@ public class DemandeController {
             enginAffecteOld.setShift_entree(Shift.currrentShift(shiftService.findAll()));
             enginAffecteOld.setDateEntree(new Date());
             enginAffecteService.saveEnginDemande(enginAffecteOld);
-            controleService.saveAll(enginAffecteOld.getControleEngin());
             enginService.update(enginAffecteOld.getEngin());
             return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);
         }
