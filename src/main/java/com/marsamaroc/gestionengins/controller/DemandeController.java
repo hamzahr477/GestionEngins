@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -60,10 +57,9 @@ public class DemandeController {
             throw new ResourceNotFoundException("Demandes Not Found");
         List<APIResponseDemandeState<DemandeDTO>> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
-            if(demande.isValableToTrait(Shift.nextShift(shiftService.findAll()).getHeureFin()))
-                demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),true));
-            else demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),false));
+                demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),demande.isValableToTrait(Shift.nextShift(shiftService.findAll()).getHeureFin())));
         }
+        Collections.sort(demandeDTOList, Comparator.comparing(APIResponseDemandeState::getValable));
         return new ResponseEntity<>(demandeDTOList,HttpStatus.OK);
     }
 

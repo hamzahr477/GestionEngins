@@ -8,6 +8,7 @@ import com.marsamaroc.gestionengins.entity.Famille;
 import com.marsamaroc.gestionengins.entity.Post;
 import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
+import com.marsamaroc.gestionengins.response.APIResponseEngins;
 import com.marsamaroc.gestionengins.service.ControleService;
 import com.marsamaroc.gestionengins.service.EnginService;
 import com.marsamaroc.gestionengins.service.FamilleService;
@@ -91,16 +92,24 @@ public class EnginsController {
     @GetMapping(value="/listeEnginsDisponible/{famille}")
     ResponseEntity<?> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille){
         List<Engin> enginList = enginService.getEnginsEntreesByFamille(famille);
-        List<EnginDTO> enginDTOList =new ArrayList<>();
+        List<APIResponseEngins<EnginDTO>> apiResponseEnginsList = new ArrayList<>();
         for (Engin engin : enginList) {
-            if(!engin.getEnginAffecteList().isEmpty())
-            if(engin.getDerniereAffectation().getEtat()== EtatAffectation.enexecution ||(
-                    engin.getDerniereAffectation().getEtat()== EtatAffectation.reserve &&
-                            LocalDateTime.of(engin.getDerniereAffectation().getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), engin.getDerniereAffectation().getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) >  1) )
-                continue;
-            enginDTOList.add(new EnginDTO(engin, null));
+            APIResponseEngins apiResponseEngins = new APIResponseEngins<>(
+                    new EnginDTO(engin,null),
+                    engin.getDisponibiliteParck(),
+                    engin.getCurrenteAffectation().getEtat()== EtatAffectation.enexecution?
+                            "sortie":LocalDateTime.of(engin.getDerniereAffectation().getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), engin.getDerniereAffectation().getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) >  1 ?
+                            "reserve" : "disponible",
+                    null,
+                    null
+            );
+            if(!apiResponseEngins.getEtat().equals("disponible")) {
+                apiResponseEngins.setCurrentEntite(engin.getCurrenteAffectation().getDemande().getEntite().getEntite());
+                apiResponseEngins.setCurrentNumBCI(engin.getCurrenteAffectation().getDemande().getNumBCI());
+            }
+            apiResponseEnginsList.add(apiResponseEngins);
         }
-        return new ResponseEntity<>(enginDTOList, HttpStatus.OK);
+        return new ResponseEntity<>(apiResponseEnginsList, HttpStatus.OK);
 
     }
 

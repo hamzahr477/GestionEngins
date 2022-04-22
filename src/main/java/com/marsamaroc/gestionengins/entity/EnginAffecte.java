@@ -54,6 +54,10 @@ public class EnginAffecte implements Serializable {
     @JoinColumn(name = "id_shift_sortie")
     Shift shift_sortie;
 
+    private String observation_entree;
+    private String observation_sortie;
+
+
     public void sync(EnginAffecte enginAffecte){
         this.idDemandeEngin = enginAffecte.idDemandeEngin != null ? enginAffecte.getIdDemandeEngin() : this.idDemandeEngin;
         this.demande = enginAffecte.demande != null ? enginAffecte.getDemande() : this.demande;

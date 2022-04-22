@@ -21,7 +21,7 @@ public class DemandeServiceImp implements DemandeService {
 
     @Override
     public List<Demande> findAllDemande() {
-        List<Demande> demandeList = demandeRepository.findAllByOrderByDateDemande();
+        List<Demande> demandeList = demandeRepository.findAllByOrderByDateSortieDesc();
         return demandeList;
     }
 

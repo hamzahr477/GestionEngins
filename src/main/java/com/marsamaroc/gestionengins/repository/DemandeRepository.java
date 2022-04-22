@@ -11,6 +11,6 @@ public interface DemandeRepository extends JpaRepository<Demande,Long> {
 
     List<Demande> findByEnginsAffecteListIsNotNull();
     List<Demande> findByEnginsAffecteListIsNull();
-    List<Demande> findAllByOrderByDateDemande();
+    List<Demande> findAllByOrderByDateSortieDesc();
 
 }
