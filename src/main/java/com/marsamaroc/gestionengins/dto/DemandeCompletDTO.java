@@ -13,7 +13,7 @@ public class DemandeCompletDTO {
     private Date dateDemande;
     private Date dateSortie;
     private Shift shift;
-    private String poste;
+    private String poste; 
     private EntiteDTO entite;
     private String statut;
     private List<FamilleDemandeDTO> familleDemandee = new ArrayList<>();

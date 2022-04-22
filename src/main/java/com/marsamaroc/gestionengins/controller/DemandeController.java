@@ -60,7 +60,7 @@ public class DemandeController {
             throw new ResourceNotFoundException("Demandes Not Found");
         List<APIResponseDemandeState<DemandeDTO>> demandeDTOList = new ArrayList<>();
         for(Demande demande : demandeList){
-            if(demande.isValableToTrait())
+            if(demande.isValableToTrait(Shift.nextShift(shiftService.findAll()).getHeureFin()))
                 demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),true));
             else demandeDTOList.add(new APIResponseDemandeState<>(new DemandeDTO(demande),false));
         }

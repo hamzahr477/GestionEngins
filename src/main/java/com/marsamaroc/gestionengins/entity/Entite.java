@@ -13,10 +13,7 @@ public class Entite implements Serializable {
     @Id
     private Long id;
     private String entite;
-    @ManyToMany
-    @JoinTable( name = "T_Post_Entite_Associations",
-            joinColumns = @JoinColumn( name = "id_entite" ),
-            inverseJoinColumns = @JoinColumn( name = "id_posts" ) )
+    @OneToMany(mappedBy="entite")
     List<Post> posts;
     @OneToMany(mappedBy="entite")
     List<Utilisateur> utilisateurList;

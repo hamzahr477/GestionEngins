@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,7 +112,8 @@ public class  Demande implements Serializable {
         return q;
     }
 
-    public boolean isValableToTrait(){
-        return (LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) > 1);
+    public boolean isValableToTrait(LocalTime maxDate){
+        return (LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) > 0 &&
+                LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.of(LocalDateTime.now(Clock.systemUTC()).toLocalDate(),maxDate)) <= 0);
     }
 }

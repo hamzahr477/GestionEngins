@@ -21,6 +21,7 @@ public class EnginSEDTO {
     private Date dateDernierAffectation;
     private EtatAffectation type;
     private Long numBCI;
+
     public EnginSEDTO(Engin engin){
         this.nomEngin = engin.getNomEngin();
         this.codeEngin = engin.getCodeEngin();
