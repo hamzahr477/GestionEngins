@@ -6,12 +6,16 @@ import com.marsamaroc.gestionengins.dto.PostDTO;
 import com.marsamaroc.gestionengins.entity.Engin;
 import com.marsamaroc.gestionengins.entity.Famille;
 import com.marsamaroc.gestionengins.entity.Post;
+import com.marsamaroc.gestionengins.entity.Shift;
 import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
+import com.marsamaroc.gestionengins.exception.ResourceNotFoundException;
 import com.marsamaroc.gestionengins.response.APIResponseEngins;
 import com.marsamaroc.gestionengins.service.ControleService;
 import com.marsamaroc.gestionengins.service.EnginService;
 import com.marsamaroc.gestionengins.service.FamilleService;
+import com.marsamaroc.gestionengins.service.ShiftService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +38,8 @@ public class EnginsController {
     @Autowired
     FamilleService familleService;
 
+    @Autowired
+    ShiftService shiftService;
     @PostMapping(value = "/addEngins")
     ResponseEntity<?> addEnginList(@RequestBody List<Engin> enginList){
         Famille famille_Old;
@@ -70,11 +76,15 @@ public class EnginsController {
     }
     
     @GetMapping(value="/listeEnginsSortie")
-    ResponseEntity<?> listeEnginsSortie(){
+    ResponseEntity<?> listeEnginsSortie() throws ResourceNotFoundException{
         List<Engin> enginList = enginService.getEnginsSorties();
         List<EnginSEDTO> enginSEDTOList =new ArrayList<>();
         for (Engin engin : enginList){
-            enginSEDTOList.add(new EnginSEDTO(engin));
+        	if(engin.getCurrenteAffectation() != null) {
+        		if(engin.getCurrenteAffectation().getEtat()==EtatAffectation.reserve &&  engin.getCurrenteAffectation().getDemande().isValableToTrait(Shift.nextShift(shiftService.findAll()).getHeureFin()))
+        			enginSEDTOList.add(new EnginSEDTO(engin));
+        	}
+        	
         }
         return new ResponseEntity<>(enginSEDTOList, HttpStatus.OK);
     }
@@ -95,9 +105,9 @@ public class EnginsController {
             APIResponseEngins apiResponseEngins = new APIResponseEngins<>(
                     new EnginDTO(engin,null),
                     engin.getDisponibiliteParck(),
-                    engin.getCurrenteAffectation().getEtat()== EtatAffectation.enexecution?
+                    engin.getCurrenteAffectation()!=null ? engin.getCurrenteAffectation().getEtat()== EtatAffectation.enexecution?
                             "sortie":LocalDateTime.of(engin.getDerniereAffectation().getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), engin.getDerniereAffectation().getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) >  1 ?
-                            "reserve" : "disponible",
+                            "reserve" : "disponible" :"disponible",
                     null,
                     null
             );
