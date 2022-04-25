@@ -67,7 +67,7 @@ public class Engin implements Serializable {
     }
     public EnginAffecte getCurrenteAffectation(){
         EnginAffecte dernierEnginAffecte = null;
-        if(enginAffecteList!=null && this.etat == EtatEngin.sortie){
+        if(enginAffecteList!=null){
             Collections.sort(this.enginAffecteList, (o1, o2) -> o1.getDateAffectation().compareTo(o2.getDateAffectation()) < 0 ?  1 : -1);
             if(!enginAffecteList.isEmpty())
                 dernierEnginAffecte = enginAffecteList.get(0);

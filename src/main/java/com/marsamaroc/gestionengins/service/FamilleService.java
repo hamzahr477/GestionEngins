@@ -1,10 +1,26 @@
 package com.marsamaroc.gestionengins.service;
 
 import com.marsamaroc.gestionengins.entity.Famille;
+import com.marsamaroc.gestionengins.repository.FamilleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public interface FamilleService {
-    Famille getById(Long id);
+@Service
+public class FamilleService  {
 
-    Famille saveFamille(Famille famille);
-    Famille getFamilleByName(String nomFamille);
+    @Autowired
+    FamilleRepository familleRepository;
+
+    public Famille getById(Long idFamille) {
+        return familleRepository.getById(idFamille);
+    }
+
+    public Famille saveFamille(Famille famille) {
+        return familleRepository.save(famille);
+    }
+
+
+    public Famille getFamilleByName(String nomFamille) {
+        return familleRepository.findByNomFamille(nomFamille);
+    }
 }

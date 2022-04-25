@@ -12,7 +12,7 @@ import com.marsamaroc.gestionengins.entity.Shift;
 
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 
-import com.marsamaroc.gestionengins.service.ShiftServiceImp;
+import com.marsamaroc.gestionengins.service.ShiftService;
 
 import lombok.Data;
 

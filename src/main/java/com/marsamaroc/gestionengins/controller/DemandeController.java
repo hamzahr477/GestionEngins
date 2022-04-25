@@ -7,11 +7,13 @@ import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.enums.TypeUser;
 import com.marsamaroc.gestionengins.exception.*;
+import com.marsamaroc.gestionengins.mapper.EntityToDTO;
 import com.marsamaroc.gestionengins.repository.UserRepository;
 import com.marsamaroc.gestionengins.response.APIResponseDemandeState;
 import com.marsamaroc.gestionengins.service.*;
 import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,23 +65,20 @@ public class DemandeController {
         return new ResponseEntity<>(demandeDTOList,HttpStatus.OK);
     }
 
+
     @RequestMapping(value="/enregistree",method= RequestMethod.GET)
-    ResponseEntity<?> getDemandeEnregistree(){
-        List<Demande> demandeList= demandeService.findAllDemandeEnregistree();
-        List<DemandeDTO> demandeDTOList = new ArrayList<>();
-        for(Demande demande : demandeList){
-            demandeDTOList.add(new DemandeDTO(demande));
-        }
-        return new ResponseEntity<>(demandeDTOList , HttpStatus.OK);
+    ResponseEntity<?> getDemandeEnregistree(@RequestParam(required = false,name="offset",defaultValue = "0") int offset,
+                                            @RequestParam(required = false,name="pageSize", defaultValue = "20") int pageSize) throws ResourceNotFoundException {
+        Page<Demande> demandePage= demandeService.getAvailbleDemandeEnregistrer(Shift.nextShift(shiftService.findAll()),offset,pageSize);
+        EntityToDTO<Demande, DemandeDTO> entityToDTO = new EntityToDTO<>(Demande.class,DemandeDTO.class);
+        return new ResponseEntity<>(entityToDTO.mappingToDTO(demandePage) , HttpStatus.OK);
     }
     @RequestMapping(value="/verifiee",method= RequestMethod.GET)
-    ResponseEntity<?> getDemandeVerifiee(){
-        List<Demande> demandeList= demandeService.findAllDemandeVerifiee();
-        List<DemandeDTO> demandeDTOList = new ArrayList<>();
-        for(Demande demande : demandeList){
-            demandeDTOList.add(new DemandeDTO(demande));
-        }
-        return new ResponseEntity<>(demandeDTOList , HttpStatus.OK);
+    ResponseEntity<?> getDemandeVerifiee(@RequestParam(required = false,name="offset",defaultValue = "0") int offset,
+                                         @RequestParam(required = false,name="pageSize", defaultValue = "20") int pageSize) throws ResourceNotFoundException {
+        Page<Demande> demandePage= demandeService.getAvailbleDemandeVerifier(Shift.nextShift(shiftService.findAll()),offset,pageSize);
+        EntityToDTO<Demande, DemandeDTO> entityToDTO = new EntityToDTO<>(Demande.class,DemandeDTO.class);
+        return new ResponseEntity<>(entityToDTO.mappingToDTO(demandePage) , HttpStatus.OK);
     }
 
 

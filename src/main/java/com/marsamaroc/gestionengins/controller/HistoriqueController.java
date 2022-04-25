@@ -54,11 +54,13 @@ public class HistoriqueController {
         enginAffecteList = enginAffecteService.getAll(sortField,offset,pageSize,familles,conducteurs,responsables,dateMaxAffectation,dateMinAffectation,dateMaxEntree,dateMinEntree,dateMaxSortie,sortType,numBCI,codeEngins,dateMinSortie,type);
         if(enginAffecteList == null || enginAffecteList.isEmpty())
             throw new ResourceNotFoundException("Historique Not Exist");
-        for(EnginAffecte enginAffecte : enginAffecteList)  {
-            for (Panne panne : enginAffecte.getEngin().getPanneList())
-                panne.filtreCriterPanne(criteres_);
+        if(!criteres_.contains(-1L))
+            for(EnginAffecte enginAffecte : enginAffecteList)  {
+                for (Panne panne : enginAffecte.getEngin().getPanneList())
+                    panne.filtreCriterPanne(criteres_);
             enginAffecte.getEngin().getPanneList().removeIf(panne -> panne.getDetailsPanneList().size()==0);
-            }        EntityToDTO<EnginAffecte , HistoriqueDTO> entityToDTO = new EntityToDTO<>(EnginAffecte.class,HistoriqueDTO.class);
+            }
+        EntityToDTO<EnginAffecte , HistoriqueDTO> entityToDTO = new EntityToDTO<>(EnginAffecte.class,HistoriqueDTO.class);
         return new ResponseEntity<>(new APIResponse<>(enginAffecteList.getContent().size(),entityToDTO.mappingToDTO(enginAffecteList)), HttpStatus.OK);
     }
 

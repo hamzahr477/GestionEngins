@@ -76,9 +76,7 @@ public class EnginsController {
         for (Engin engin : enginList){
             enginSEDTOList.add(new EnginSEDTO(engin));
         }
-
         return new ResponseEntity<>(enginSEDTOList, HttpStatus.OK);
-
     }
     @GetMapping(value="/listeEnginsEntree")
     ResponseEntity<?> listeEnginsEntree(){
