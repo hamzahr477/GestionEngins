@@ -17,9 +17,9 @@ import java.util.List;
 public interface EnginRepository extends JpaRepository<Engin,String> {
 
 
-    @Query("select distinct e from Engin e , EnginAffecte ea" +
-            " where e.codeEngin = ea.engin.codeEngin "+
-            "and ea.etat = '"+ EtatAffectation.reserve_value+"'")
+    @Query("select distinct e from Engin e , EnginAffecte ea "
+    		+ "where e.codeEngin = ea.engin.codeEngin "
+    		+ "and ea.idDemandeEngin is not null ")
     List<Engin> findAllEnginAffecteAndPreSortie();
 
 
