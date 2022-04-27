@@ -1,6 +1,7 @@
 package com.marsamaroc.gestionengins.controller;
 
 import com.marsamaroc.gestionengins.dto.EnginDTO;
+import com.marsamaroc.gestionengins.dto.EnginDispDTO;
 import com.marsamaroc.gestionengins.dto.EnginSEDTO;
 import com.marsamaroc.gestionengins.dto.PostDTO;
 import com.marsamaroc.gestionengins.entity.Engin;
@@ -98,20 +99,18 @@ public class EnginsController {
 
     }
     @GetMapping(value="/listeEnginsDisponible/{famille}")
-    ResponseEntity<?> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille){
+    ResponseEntity<?> listeEnginsEntreeByFamille(@PathVariable("famille") Long famille) throws ResourceNotFoundException {
         List<Engin> enginList = enginService.getEnginsEntreesByFamille(famille);
-        List<APIResponseEngins<EnginDTO>> apiResponseEnginsList = new ArrayList<>();
+        List<APIResponseEngins<EnginDispDTO>> apiResponseEnginsList = new ArrayList<>();
         for (Engin engin : enginList) {
             APIResponseEngins apiResponseEngins = new APIResponseEngins<>(
-                    new EnginDTO(engin,null),
+                    new EnginDispDTO(engin),
                     engin.getDisponibiliteParck(),
-                    engin.getCurrenteAffectation()!=null ? engin.getCurrenteAffectation().getEtat()== EtatAffectation.enexecution?
-                            "sortie":LocalDateTime.of(engin.getDerniereAffectation().getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), engin.getDerniereAffectation().getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) >  1 ?
-                            "reserve" : "disponible" :"disponible",
+                    engin.getState(Shift.nextShift(shiftService.findAll()).getHeureFin()),
                     null,
                     null
             );
-            if(!apiResponseEngins.getEtat().equals("disponible")) {
+            if(!apiResponseEngins.getEtat().equals("Disponible")) {
                 apiResponseEngins.setCurrentEntite(engin.getCurrenteAffectation().getDemande().getEntite().getEntite());
                 apiResponseEngins.setCurrentNumBCI(engin.getCurrenteAffectation().getDemande().getNumBCI());
             }

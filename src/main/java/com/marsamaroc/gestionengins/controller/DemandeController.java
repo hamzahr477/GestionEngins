@@ -152,7 +152,7 @@ public class DemandeController {
     }
 
     @PostMapping(value="delete/{numBCI}")
-    ResponseEntity<?> deletDemande(@PathVariable("numBCI") Long numBCI) throws AffectDemandDeleteException {
+    ResponseEntity<?> deletDemande(@PathVariable("numBCI") Long numBCI) throws AffectDemandDeleteException, ResourceNotFoundException {
         Demande demande = demandeService.getById(numBCI);
         if(demande.getEnginsAffecteList().isEmpty()){
             demandeService.deletDemande(demande);
@@ -187,6 +187,7 @@ public class DemandeController {
             enginAffecteOld.setShift_sortie(Shift.currrentShift(shiftService.findAll()));
             enginAffecteOld.setEtat(EtatAffectation.enexecution);
             enginAffecteOld.setDateSortie(new Date());
+            enginAffecteOld.setObservation_sortie(enginAffecteeSEDTO.getObservation());
             enginAffecteService.saveEnginDemande(enginAffecteOld);
             enginAffecteOld.getEngin().setCompteur(enginAffecteeSEDTO.getCompteur());
             enginAffecteOld.getEngin().setEtat(EtatEngin.sortie);
@@ -239,6 +240,7 @@ public class DemandeController {
             enginAffecteOld.setEtat(EtatAffectation.execute);
             enginAffecteOld.setShift_entree(Shift.currrentShift(shiftService.findAll()));
             enginAffecteOld.setDateEntree(new Date());
+            enginAffecteOld.setObservation_entree(enginAffecteeSEDTO.getObservation());
             enginAffecteService.saveEnginDemande(enginAffecteOld);
             enginService.update(enginAffecteOld.getEngin());
             return new ResponseEntity<>(new EnginAffecteeDTO(enginAffecteOld) , HttpStatus.OK);

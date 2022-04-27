@@ -54,6 +54,7 @@ public class EnginAffecteService  {
         enginAffecteRepository.delete(enginAffecte);
     }
 
+
     public Page<EnginAffecte> getAll(String sortField,
                                      int offset,
                                      int pageSize,

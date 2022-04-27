@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,11 @@ public class Post implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_entite")
     Entite entite;
-    boolean deleted = false;
+    //Parametrage
+    private Boolean active = true;
+    private Date dateCreation;
+    private Date derniereModification;
+    ////
 
     public void sync(Post post){
         if(post == null) return;

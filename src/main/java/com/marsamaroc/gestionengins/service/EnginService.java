@@ -1,7 +1,9 @@
 package com.marsamaroc.gestionengins.service;
 
 import com.marsamaroc.gestionengins.dto.EnginDTO;
+import com.marsamaroc.gestionengins.entity.Demande;
 import com.marsamaroc.gestionengins.entity.Engin;
+import com.marsamaroc.gestionengins.exception.ResourceNotFoundException;
 import com.marsamaroc.gestionengins.repository.EnginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,11 @@ public class EnginService {
         return enginRepository.findById(id);
     }
 
+    public Engin removeEngin(String id) throws ResourceNotFoundException {
+        Engin enginOld = enginRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Engin not found for id :: "+id));
+        enginOld.setActive(false);
+        return enginRepository.save(enginOld);
+    }
     public EnginDTO saveOrUpdate(Engin engin) {
         Engin enginold = enginRepository.findByCodeEngin(engin.getCodeEngin());
         if(enginold!=null) enginold.sync(engin);

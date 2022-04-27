@@ -26,6 +26,8 @@ public class EnginDTO {
     private Long compteur_entree;
     private Date dateEntree;
     private Date dateSortie;
+    private Date observation_entree;
+    private Date observation_sortie;
     //
     private List<CritereDemandeDTO> critere = new ArrayList<>();
     public EnginDTO(Engin engin, EnginAffecte enginAffecte){

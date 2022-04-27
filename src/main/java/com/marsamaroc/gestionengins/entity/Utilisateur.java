@@ -29,13 +29,23 @@ public class Utilisateur implements Serializable {
     @Enumerated(EnumType.STRING)
     private TypeUser type;
 
+
     @ManyToOne
     @JoinColumn(name = "id_entite")
     private Entite entite;
 
+    @ManyToOne
+    @JoinColumn(name = "id_societe")
+    private Societe societe;
+
     @OneToMany(mappedBy= "utilisateur")
     private List<Demande> demandeList;
 
+    //Parametrage
+    private Boolean active = true;
+    private Date dateCreation;
+    private Date derniereModification;
+    ////
     /*
     public boolean isDisponible(){
         if(enginAffecteList_conducteur!=null){

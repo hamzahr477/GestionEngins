@@ -30,7 +30,11 @@ public class Panne implements Serializable {
     @JoinColumn(name = "panne_id")
     private List<DetailsPanne> detailsPanneList;
 
-    Date dateCreationPanne = new Date();
+    //Parametrage
+    private Boolean active = true;
+    private Date dateCreation;
+    private Date derniereModification;
+    ////
 
     public Panne filtreCriterPanne(List<Long> idCriters){
         this.detailsPanneList.removeIf(detailsPanne -> !idCriters.contains(detailsPanne.getCritere().getIdCritere()));

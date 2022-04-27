@@ -57,6 +57,9 @@ public class EnginAffecte implements Serializable {
     private String observation_entree;
     private String observation_sortie;
 
+    //Parametrage
+    private Boolean active = true;
+    ////
 
     public void sync(EnginAffecte enginAffecte){
         this.idDemandeEngin = enginAffecte.idDemandeEngin != null ? enginAffecte.getIdDemandeEngin() : this.idDemandeEngin;

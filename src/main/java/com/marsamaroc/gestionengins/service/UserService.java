@@ -1,7 +1,9 @@
 package com.marsamaroc.gestionengins.service;
 
+import com.marsamaroc.gestionengins.entity.Societe;
 import com.marsamaroc.gestionengins.entity.Utilisateur;
 import com.marsamaroc.gestionengins.enums.TypeUser;
+import com.marsamaroc.gestionengins.exception.ResourceNotFoundException;
 import com.marsamaroc.gestionengins.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,11 @@ public class UserService {
         if (utilisateur_Test == null)
             utilisateur_Test = saveUser(utilisateur);
         return utilisateur_Test;
+    }
+    public Utilisateur removeSociete(Long id) throws ResourceNotFoundException {
+        Utilisateur userOld =userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Utilisateur not found for id :: "+id));
+        userOld.setActive(false);
+        return userRepository.save(userOld);
     }
     public Utilisateur getUserByMatricule(String matricule) {
         return userRepository.findByMatricule(matricule);

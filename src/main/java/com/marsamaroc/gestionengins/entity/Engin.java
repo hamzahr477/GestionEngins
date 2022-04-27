@@ -1,6 +1,7 @@
 package com.marsamaroc.gestionengins.entity;
 
 
+import com.marsamaroc.gestionengins.enums.EtatAffectation;
 import com.marsamaroc.gestionengins.enums.EtatEngin;
 import com.marsamaroc.gestionengins.enums.DisponibiliteEnginParck;
 import lombok.Data;
@@ -8,10 +9,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.*;
 
 @Data
 @Entity
@@ -26,21 +25,20 @@ public class Engin implements Serializable {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "id_famille")
     private Famille famille;
-
     @Enumerated(EnumType.STRING)
     private EtatEngin etat = EtatEngin.parcking;
-
     @Enumerated(EnumType.STRING)
     private DisponibiliteEnginParck disponibiliteParck = DisponibiliteEnginParck.indisponible;
-
     @OneToMany(mappedBy = "engin")
     private List<EnginAffecte> enginAffecteList;
-
-    boolean deleted = false;
-
     @OneToMany(mappedBy = "engin")
     List<Panne> panneList ;
 
+    //Parametrage
+    private Boolean active = true;
+    private Date dateCreation;
+    private Date derniereModification;
+    ////
     public void sync(Engin engin){
         if(engin == null) return;
         this.codeEngin = engin.getCodeEngin()!= null ? engin.getCodeEngin() : this.codeEngin;
@@ -77,10 +75,19 @@ public class Engin implements Serializable {
     public Panne getDernierePanne(){
         Panne panne = null;
         if(this.panneList!=null){
-            Collections.sort(this.panneList, (o1, o2) -> o1.getDateCreationPanne().compareTo(o2.getDateCreationPanne()) < 0 ?  1 : -1);
+            Collections.sort(this.panneList, (o1, o2) -> o1.getDateCreation().compareTo(o2.getDateCreation()) < 0 ?  1 : -1);
             if(!panneList.isEmpty())
                 panne = panneList.get(0);
         }
         return panne;
+    }
+    public String getState(LocalTime maxShift){
+        if(this.getCurrenteAffectation()!=null) {
+            if (this.getCurrenteAffectation().getEtat() == EtatAffectation.enexecution)
+                return "Non Retour";
+            if(this.getCurrenteAffectation().getEtat() == EtatAffectation.reserve && this.getCurrenteAffectation().getDemande().isValableToTrait(maxShift))
+                return "Reserve";
+        }
+        return "Disponible";
     }
 }

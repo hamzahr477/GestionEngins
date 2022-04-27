@@ -69,8 +69,10 @@ public class DemandeService   {
         return demandeRepository.findByEnginsAffecteListIsNull();
     }
 
-    public void deletDemande(Demande demande) {
-        demandeRepository.delete(demande);
+    public void deletDemande(Demande demande) throws ResourceNotFoundException {
+        Demande demandeOld = demandeRepository.findById(demande.getNumBCI()).orElseThrow(()->new ResourceNotFoundException("Demande not found for id :: "+demande.getNumBCI()));
+        demandeOld.setActive(false);
+        demandeRepository.save(demandeOld);
     }
 
     public List<Demande> findAllDemandeVerifiee() {

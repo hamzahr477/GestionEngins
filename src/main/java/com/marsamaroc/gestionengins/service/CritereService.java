@@ -1,6 +1,7 @@
 package com.marsamaroc.gestionengins.service;
 
 import com.marsamaroc.gestionengins.entity.Critere;
+import com.marsamaroc.gestionengins.exception.ResourceNotFoundException;
 import com.marsamaroc.gestionengins.repository.CritereRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,11 @@ public class CritereService   {
 
     public List<Critere> findAllCriteres() {
         return critereRepository.findAll();
+    }
+
+    public Critere removeCritere(Long id) throws ResourceNotFoundException {
+        Critere critereOld = critereRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Critere not found for id :: "+id));
+        critereOld.setActive(false);
+        return critereOld;
     }
 }

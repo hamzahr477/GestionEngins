@@ -18,4 +18,6 @@ public class DetailsDemande implements Serializable {
     @ManyToOne
     Famille famille;
     int quantite;
+
+
 }

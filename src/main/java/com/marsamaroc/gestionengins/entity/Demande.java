@@ -5,10 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +36,11 @@ public class  Demande implements Serializable {
     @ManyToOne
     @JoinColumn(name = "demande_responsable")
     private Utilisateur utilisateur;
+
+    //Parametrage
+    private Boolean active = true;
+    private Date derniereModification;
+    ////
 
     public int getQuantite(){
         int totalEngin=0;
@@ -112,8 +114,8 @@ public class  Demande implements Serializable {
         return q;
     }
 
-    public boolean isValableToTrait(LocalTime maxDate){
+    public boolean isValableToTrait(LocalTime nextShift){
         return (LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) > 0 &&
-                LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.of(LocalDateTime.now(Clock.systemUTC()).toLocalDate(),maxDate)) <= 0);
+                LocalDateTime.of(this.getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), this.getShift().getHeureFin()).compareTo(LocalDateTime.of(nextShift.compareTo(LocalDateTime.now(Clock.systemUTC()).toLocalTime())>=0? LocalDate.now(): LocalDate.now().plusDays(1),nextShift)) <= 0);
     }
 }
