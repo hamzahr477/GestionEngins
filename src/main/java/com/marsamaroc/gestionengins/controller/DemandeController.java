@@ -69,7 +69,9 @@ public class DemandeController {
     @RequestMapping(value="/enregistree",method= RequestMethod.GET)
     ResponseEntity<?> getDemandeEnregistree(@RequestParam(required = false,name="offset",defaultValue = "0") int offset,
                                             @RequestParam(required = false,name="pageSize", defaultValue = "20") int pageSize) throws ResourceNotFoundException {
-        Page<Demande> demandePage= demandeService.getAvailbleDemandeEnregistrer(Shift.nextShift(shiftService.findAll()),offset,pageSize);
+    	Page<Demande> demandePage= demandeService.getAvailbleDemandeEnregistrer(Shift.nextShift(shiftService.findAll()),offset,pageSize);
+    	if(demandePage == null) throw new ResourceNotFoundException("Demandes not found");
+
         EntityToDTO<Demande, DemandeDTO> entityToDTO = new EntityToDTO<>(Demande.class,DemandeDTO.class);
         return new ResponseEntity<>(entityToDTO.mappingToDTO(demandePage) , HttpStatus.OK);
     }
@@ -167,10 +169,10 @@ public class DemandeController {
         EnginAffecte enginAffecteOld = enginAffecteService.findById(enginAffecteeSEDTO.getIdDemandeEngin()).orElseThrow(
                 ()->new ResourceNotFoundException("Affectation not found for this id :: "+enginAffecteeSEDTO.getIdDemandeEngin())
         );
-        if(enginAffecteOld.getEtat()==EtatAffectation.enexecution)
-            throw new EnginSortieException("Engin alrady exit");
-        if (LocalDateTime.of(enginAffecteOld.getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), enginAffecteOld.getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) <     1)
-            throw new DemandeClotureException("Date demande has been passed for numBCI :: " + enginAffecteOld.getDemande().getNumBCI());
+//        if(enginAffecteOld.getEtat()==EtatAffectation.enexecution)
+//            throw new EnginSortieException("Engin alrady exit");
+//        if (LocalDateTime.of(enginAffecteOld.getDemande().getDateSortie().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), enginAffecteOld.getDemande().getShift().getHeureFin()).compareTo(LocalDateTime.now(Clock.systemUTC())) <     1)
+//            throw new DemandeClotureException("Date demande has been passed for numBCI :: " + enginAffecteOld.getDemande().getNumBCI());
         EnginAffecte enginAffecte = new EnginAffecte();
         enginAffecte.setConducteur_sortie(enginAffecteeSEDTO.getConducteur());
         enginAffecte.setResponsableAffectation_sortie(enginAffecteeSEDTO.getResponsableAffectation());

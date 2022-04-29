@@ -1,10 +1,13 @@
 package com.marsamaroc.gestionengins;
 
 import com.marsamaroc.gestionengins.entity.Shift;
+import com.marsamaroc.gestionengins.entity.Societe;
 import com.marsamaroc.gestionengins.repository.CritereRepository;
 import com.marsamaroc.gestionengins.repository.ShiftRepository;
 import com.marsamaroc.gestionengins.service.DemandeService;
 import com.marsamaroc.gestionengins.service.ShiftService;
+import com.marsamaroc.gestionengins.service.SocieteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +23,9 @@ public class GestionenginsApplication implements CommandLineRunner {
     @Autowired
     ShiftService shiftService;
 
+    @Autowired
+    SocieteService societeService;
+    
     public static void main(String[] args) {
         SpringApplication.run(GestionenginsApplication.class, args);
     }
@@ -43,5 +49,17 @@ public class GestionenginsApplication implements CommandLineRunner {
         shiftService.saveIfNotExist(shift1);
         shiftService.saveIfNotExist(shift2);
         shiftService.saveIfNotExist(shift3);
+        
+        
+        
+        
+        Societe societe = new Societe();
+        societe.setActive(true);
+        societe.setCodeSociete("MM");
+        societe.setNomSociete("MARSA MAROC");
+        
+        societeService.saveifNotExist(societe);
+
+        
     }
 }
